@@ -1,0 +1,3026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#06080b" />
+<title>TROLL — HK Shore Fishing</title>
+
+<link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2306080b'/%3E%3Cpath d='M10 50 Q30 40 50 48 Q65 40 88 30 L78 50 L88 70 Q65 60 50 52 Q30 60 10 50 Z' fill='none' stroke='%23c5ff3d' stroke-width='2'/%3E%3Cpath d='M40 25 Q50 20 60 35' fill='none' stroke='%23c5ff3d' stroke-width='2'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Major+Mono+Display&display=swap">
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+
+<style>
+/* ==========================================================================
+   01 — TOKENS
+   ========================================================================== */
+:root {
+  --paper: #0a0d12;
+  --paper-deep: #06080b;
+  --ink: #f5f1e8;
+  --ink-dim: #a8a29e;
+  --ink-ghost: #57534e;
+
+  --radio: #c5ff3d;
+  --radio-glow: rgba(197, 255, 61, 0.25);
+  --radio-trace: rgba(197, 255, 61, 0.08);
+
+  --warn: #d4a574;
+  --danger: #b85c5c;
+  --calm: #7a9b8e;
+
+  --hair: rgba(245, 241, 232, 0.08);
+  --rule: rgba(245, 241, 232, 0.18);
+  --rule-strong: rgba(245, 241, 232, 0.32);
+
+  --font-display: "Fraunces", "Playfair Display", Georgia, serif;
+  --font-body: "Inter Tight", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-stencil: "Major Mono Display", "JetBrains Mono", monospace;
+
+  --brand-name: "TROLL";
+  --spring-fast: cubic-bezier(0.32, 0.72, 0, 1);
+  --spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ==========================================================================
+   02 — RESET + BASE
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  font-feature-settings: "ss01", "cv11";
+  color: var(--ink);
+  background: var(--paper-deep);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  hanging-punctuation: first last;
+  overflow-x: hidden;
+  cursor: none;
+  letter-spacing: -0.01em;
+}
+@media (pointer: coarse) { body { cursor: auto; } }
+@media (prefers-reduced-motion: reduce) { body { cursor: auto; } }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: none; -webkit-tap-highlight-color: transparent; background: transparent; border: 0; padding: 0; }
+@media (pointer: coarse) { button { cursor: pointer; } }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ==========================================================================
+   03 — TYPOGRAPHY
+   ========================================================================== */
+.t-display { font-family: var(--font-display); font-weight: 700; font-size: clamp(56px, 9vw, 96px); line-height: 0.92; letter-spacing: -0.04em; font-variation-settings: "opsz" 144; }
+.t-h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -0.03em; font-variation-settings: "opsz" 96; }
+.t-h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(24px, 3vw, 32px); line-height: 1.05; letter-spacing: -0.02em; font-variation-settings: "opsz" 48; }
+.t-body-l { font-size: 18px; line-height: 1.5; }
+.t-body { font-size: 15px; line-height: 1.55; color: var(--ink-dim); }
+.t-cap { font-family: var(--font-body); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-dim); }
+.t-mono-s { font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--ink-dim); }
+.t-mono { font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.t-stencil { font-family: var(--font-stencil); font-size: 11px; text-transform: lowercase; letter-spacing: 0.04em; }
+.radio-text { color: var(--radio); }
+.italic { font-style: italic; }
+.dim { color: var(--ink-dim); }
+.ghost { color: var(--ink-ghost); }
+
+/* ==========================================================================
+   04 — SPLASH (PRE-LOAD)
+   ========================================================================== */
+#splash {
+  position: fixed; inset: 0;
+  background: var(--paper-deep);
+  z-index: 10000;
+  display: grid; place-items: center;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-quart);
+}
+#splash.gone { opacity: 0; }
+.splash-mark {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  animation: splashFade 1.2s var(--ease-quart) forwards;
+}
+.splash-fish {
+  width: clamp(220px, 36vw, 360px);
+  height: auto;
+  stroke: var(--ink);
+  fill: none;
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 24px rgba(245,241,232,0.05));
+  opacity: 0;
+  animation: splashFishIn 1.2s var(--ease-quart) 0.1s forwards;
+}
+.splash-word {
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0;
+  animation: splashWordIn 1.0s var(--ease-quart) 0.5s forwards;
+}
+.splash-word .rule {
+  height: 1px; width: 32px; background: var(--ink); opacity: 0.6;
+}
+.splash-word .name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  color: var(--ink);
+}
+@keyframes splashFishIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes splashWordIn { from { opacity: 0; letter-spacing: 0.8em; } to { opacity: 1; letter-spacing: 0.5em; } }
+@keyframes splashFade { 0%, 90% { opacity: 1; } 100% { opacity: 1; } }
+
+/* ==========================================================================
+   05 — CURSOR + RIPPLES
+   ========================================================================== */
+#cursor-layer, #ripple-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  width: 100%; height: 100%;
+}
+#cursor-dot, #cursor-ring {
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+#cursor-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--radio);
+  box-shadow: 0 0 8px var(--radio-glow);
+  transform: translate3d(-50%, -50%, 0);
+}
+#cursor-ring {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--radio);
+  transform: translate3d(-50%, -50%, 0);
+  transition: width 200ms var(--ease-quart), height 200ms var(--ease-quart), background 200ms var(--ease-quart), border-color 200ms var(--ease-quart);
+  position: relative;
+}
+#cursor-ring::before, #cursor-ring::after {
+  content: "";
+  position: absolute;
+  background: var(--radio);
+  opacity: 0.7;
+}
+#cursor-ring::before {
+  left: 50%; top: -4px; bottom: -4px; width: 1px; transform: translateX(-50%);
+}
+#cursor-ring::after {
+  top: 50%; left: -4px; right: -4px; height: 1px; transform: translateY(-50%);
+}
+#cursor-ring.hover {
+  width: 56px; height: 56px;
+  background: var(--radio-trace);
+  border-color: var(--radio);
+}
+#cursor-ring.hover::before, #cursor-ring.hover::after { opacity: 0; }
+#cursor-ring.press {
+  width: 14px; height: 14px;
+  background: var(--radio);
+  border-color: var(--radio);
+}
+.trail-dot {
+  position: fixed; top: 0; left: 0;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--radio);
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+  animation: trailFade 2.4s linear forwards;
+}
+@keyframes trailFade { from { opacity: 0.5; } to { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.4); } }
+.ripple {
+  position: fixed; top: 0; left: 0;
+  width: 4px; height: 4px;
+  border: 1px solid var(--radio);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+  animation: rippleOut 700ms var(--ease-quart) forwards;
+}
+@keyframes rippleOut {
+  from { width: 4px; height: 4px; opacity: 0.9; }
+  to { width: 160px; height: 160px; opacity: 0; }
+}
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  #cursor-dot, #cursor-ring, .trail-dot { display: none !important; }
+}
+
+/* ==========================================================================
+   06 — APP SHELL + TOPBAR
+   ========================================================================== */
+.app {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding:
+    calc(20px + env(safe-area-inset-top)) clamp(20px, 4vw, 48px)
+    calc(96px + env(safe-area-inset-bottom));
+  z-index: 1;
+}
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hair);
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex; align-items: center; gap: 14px;
+  cursor: none;
+}
+.brand-fish { width: 38px; height: 38px; }
+.brand-fish svg { stroke: var(--ink); fill: none; stroke-width: 1.6; }
+.brand-word {
+  display: flex; align-items: center; gap: 8px;
+}
+.brand-word .rule { width: 14px; height: 1px; background: var(--ink); opacity: 0.7; }
+.brand-word .name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.3em;
+  padding-left: 0.3em;
+}
+
+.tabs {
+  display: flex; gap: 2px;
+  border: 1px solid var(--hair);
+  padding: 4px;
+  border-radius: 0;
+}
+.tab {
+  font-family: var(--font-stencil);
+  font-size: 11px;
+  text-transform: lowercase;
+  padding: 10px 16px;
+  min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink-dim);
+  letter-spacing: 0.12em;
+  transition: color 200ms, background 200ms;
+}
+.tab[aria-selected="true"] { color: var(--paper); background: var(--ink); }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"]:hover { color: var(--paper); }
+
+.top-utils {
+  display: flex; align-items: center; gap: 12px;
+}
+.loc-toggle {
+  display: inline-flex;
+  border: 1px solid var(--hair);
+  padding: 3px;
+}
+.loc-toggle button {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 8px 12px;
+  min-height: 44px;
+  min-width: 44px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  transition: color 200ms, background 200ms;
+}
+.loc-toggle button[aria-pressed="true"] { color: var(--paper); background: var(--radio); }
+
+.icon-btn {
+  width: 44px; height: 44px;
+  display: inline-grid; place-items: center;
+  border: 1px solid var(--hair);
+  color: var(--ink-dim);
+  transition: color 200ms, border-color 200ms;
+}
+.icon-btn:hover { color: var(--ink); border-color: var(--rule); }
+.icon-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.4; fill: none; }
+
+.live-pip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.live-pip::before {
+  content: "";
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--radio);
+  box-shadow: 0 0 10px var(--radio);
+  animation: livePulse 1.6s var(--ease-quart) infinite;
+}
+@keyframes livePulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+
+/* ==========================================================================
+   07 — TYPHOON BANNER + ALERTS
+   ========================================================================== */
+.typhoon-banner {
+  display: none;
+  background: var(--danger);
+  color: var(--ink);
+  padding: 18px 24px;
+  margin: -16px 0 32px;
+  align-items: center; justify-content: space-between;
+  gap: 20px;
+}
+.typhoon-banner.on { display: flex; }
+.typhoon-banner h3 { font-family: var(--font-display); font-size: 20px; margin: 0; font-weight: 600; }
+.typhoon-banner p { margin: 4px 0 0; font-size: 13px; opacity: 0.85; }
+.typhoon-banner .sigil { font-family: var(--font-mono); font-size: 11px; padding: 6px 10px; border: 1px solid var(--ink); }
+
+.warn-banner {
+  display: none;
+  border: 1px solid var(--warn);
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-family: var(--font-mono); font-size: 12px; color: var(--warn);
+  align-items: center; gap: 10px;
+}
+.warn-banner.on { display: flex; }
+
+/* ==========================================================================
+   08 — VIEWS / PAGES
+   ========================================================================== */
+.view { display: none; animation: viewIn 360ms var(--ease-quart) both; }
+.view[data-active="true"] { display: block; }
+@keyframes viewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ==========================================================================
+   09 — GRID (14-column asymmetric)
+   ========================================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 32px 20px;
+}
+.span-edge-l { grid-column: 1 / 2; }
+.span-main { grid-column: 2 / 14; }
+.span-edge-r { grid-column: 14 / 15; }
+.span-8 { grid-column: span 8; }
+.span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; }
+.span-5 { grid-column: span 5; }
+.span-9 { grid-column: span 9; }
+.span-14 { grid-column: 1 / -1; }
+.span-12 { grid-column: 2 / 14; }
+@media (max-width: 1100px) {
+  .span-8, .span-6, .span-7, .span-5, .span-9 { grid-column: 1 / -1; }
+  .span-12, .span-main { grid-column: 1 / -1; }
+  .span-edge-l, .span-edge-r { display: none; }
+}
+
+.section {
+  position: relative;
+  padding: 0;
+}
+.section + .section { margin-top: 48px; }
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 1px solid var(--hair);
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--radio);
+  margin-right: 10px;
+  letter-spacing: 0.1em;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.section-meta {
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.1em;
+}
+
+.card {
+  position: relative;
+  border: 1px solid var(--hair);
+  padding: 24px;
+  background: rgba(245, 241, 232, 0.01);
+  transition: border-color 280ms var(--ease-quart);
+}
+.card.solid {
+  background: var(--paper);
+}
+.card.feature {
+  border: 1px solid var(--rule);
+  background: linear-gradient(180deg, rgba(245,241,232,0.02), transparent);
+}
+.card .corner-coord {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.08em;
+  color: var(--ink-ghost);
+}
+.card .corner-coord.tl { top: 8px; left: 8px; }
+.card .corner-coord.br { bottom: 8px; right: 8px; }
+.card .num-tag {
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-ghost);
+  letter-spacing: 0.1em;
+}
+.card-title-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.card-title {
+  font-family: var(--font-stencil);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.12em;
+}
+
+/* ==========================================================================
+   10 — HERO (DASH HEADLINE)
+   ========================================================================== */
+.hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+}
+.hero-line-1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(40px, 6vw, 72px); line-height: 0.95; letter-spacing: -0.03em; }
+.hero-line-1 em { font-style: italic; color: var(--radio); font-weight: 500; }
+.hero-line-2 { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--ink-dim); margin-top: 12px; }
+.hero-stamp {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-ghost);
+  text-align: right;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+}
+
+/* ==========================================================================
+   11 — DANGER METER
+   ========================================================================== */
+.meter-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 36px;
+  align-items: center;
+  padding: 32px;
+}
+.meter-ring { position: relative; width: 240px; height: 240px; margin: auto; }
+.meter-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.meter-bg { fill: none; stroke: var(--hair); stroke-width: 1.5; }
+.meter-fg {
+  fill: none;
+  stroke: var(--radio);
+  stroke-width: 1.5;
+  stroke-linecap: butt;
+  filter: drop-shadow(0 0 6px var(--radio-glow));
+  transition: stroke-dashoffset 1.4s var(--ease-quart), stroke 600ms;
+}
+.meter-ticks line { stroke: var(--rule); stroke-width: 0.5; }
+.meter-ticks line.major { stroke: var(--ink); stroke-width: 1; }
+.meter-center {
+  position: absolute; inset: 0;
+  display: grid; place-items: center; text-align: center;
+}
+.meter-num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 84px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variation-settings: "opsz" 144;
+}
+.meter-num small { font-size: 18px; color: var(--ink-dim); }
+.meter-status { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 6px; color: var(--ink-dim); }
+.meter-pulse { animation: pulseRing 2.4s var(--ease-quart) infinite; }
+@keyframes pulseRing { 0%,100% { filter: drop-shadow(0 0 6px var(--radio-glow)); } 50% { filter: drop-shadow(0 0 18px var(--radio-glow)); } }
+
+.meter-breakdown { display: grid; gap: 14px; }
+.meter-break-item {
+  display: grid;
+  grid-template-columns: 90px 1fr 50px;
+  align-items: center;
+  gap: 14px;
+}
+.meter-break-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+.meter-break-bar {
+  height: 1px;
+  background: var(--hair);
+  position: relative;
+}
+.meter-break-bar::after {
+  content: "";
+  position: absolute; left: 0; top: -1px; bottom: -1px;
+  width: var(--w, 0%);
+  background: var(--ink);
+  transition: width 1s var(--ease-quart);
+}
+.meter-break-bar.danger::after { background: var(--radio); height: 3px; top: -1.5px; bottom: -1.5px; box-shadow: 0 0 10px var(--radio-glow); }
+.meter-break-val { font-family: var(--font-mono); font-size: 12px; text-align: right; }
+.meter-tip {
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   12 — CONDITIONS PANEL
+   ========================================================================== */
+.cond-card { padding: 28px; }
+.cond-temp {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(80px, 12vw, 140px);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  font-variation-settings: "opsz" 144;
+}
+.cond-temp .deg { font-size: 0.45em; color: var(--ink-dim); vertical-align: super; }
+.cond-desc { font-family: var(--font-display); font-size: 22px; font-weight: 400; font-style: italic; color: var(--ink-dim); margin-top: 10px; }
+.cond-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--hair);
+  margin-top: 28px;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.cond-cell {
+  background: var(--paper-deep);
+  padding: 16px 14px;
+}
+.cond-cell .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.cond-cell .val { font-family: var(--font-display); font-weight: 500; font-size: 28px; margin-top: 6px; line-height: 1; }
+.cond-cell .sub { font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); margin-top: 4px; letter-spacing: 0.06em; }
+@media (max-width: 700px) { .cond-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.compass {
+  width: 64px; height: 64px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  position: relative;
+  margin-top: 8px;
+}
+.compass span { position: absolute; font-family: var(--font-mono); font-size: 9px; color: var(--ink-dim); letter-spacing: 0.06em; }
+.compass span.n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--radio); }
+.compass span.s { bottom: 2px; left: 50%; transform: translateX(-50%); }
+.compass span.e { right: 4px; top: 50%; transform: translateY(-50%); }
+.compass span.w { left: 4px; top: 50%; transform: translateY(-50%); }
+.compass-arrow {
+  position: absolute; top: 50%; left: 50%;
+  width: 1.5px; height: 24px;
+  margin-left: -0.75px; margin-top: -24px;
+  background: var(--radio);
+  transform-origin: bottom center;
+  transition: transform 800ms var(--ease-quart);
+  box-shadow: 0 0 6px var(--radio-glow);
+}
+.compass-arrow::before {
+  content: "";
+  position: absolute;
+  top: -3px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 5px solid var(--radio);
+}
+
+/* ==========================================================================
+   13 — TIDE CHART
+   ========================================================================== */
+.tide-card { padding: 24px; }
+#tide-chart { width: 100%; height: 240px; display: block; }
+.tide-extrema {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--hair);
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.tide-pt { background: var(--paper-deep); padding: 12px 14px; }
+.tide-pt .type { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+.tide-pt .type.high { color: var(--radio); }
+.tide-pt .type.low { color: var(--ink-dim); }
+.tide-pt .time { font-family: var(--font-display); font-weight: 500; font-size: 22px; margin-top: 6px; line-height: 1; }
+.tide-pt .h { font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); margin-top: 6px; letter-spacing: 0.06em; }
+
+/* ==========================================================================
+   14 — MOON / SOLUNAR
+   ========================================================================== */
+.moon-card { padding: 24px; }
+.moon-vis { display: flex; align-items: center; gap: 24px; }
+.moon-disk {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 32px rgba(245,241,232,0.04), inset -6px -6px 22px rgba(10,13,18,0.5);
+  flex-shrink: 0;
+}
+.moon-shadow { position: absolute; top: 0; bottom: 0; background: var(--paper-deep); transition: all 800ms var(--ease-quart); }
+.moon-data { display: grid; gap: 6px; }
+.moon-name { font-family: var(--font-display); font-size: 22px; font-weight: 500; }
+.moon-illum { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.06em; }
+.moon-rise { font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); letter-spacing: 0.06em; }
+
+.solunar-grid {
+  margin-top: 22px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--hair);
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.solunar-cell { background: var(--paper-deep); padding: 14px; }
+.solunar-cell .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.solunar-cell.major .k { color: var(--radio); }
+.solunar-cell .v { font-family: var(--font-mono); font-size: 13px; margin-top: 6px; line-height: 1.5; }
+
+/* ==========================================================================
+   15 — HEAT MATRIX (BEST HOURS)
+   ========================================================================== */
+.heat {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+.heat-labels { display: grid; gap: 2px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-dim); text-align: right; letter-spacing: 0.06em; align-content: stretch; }
+.heat-grid { display: grid; gap: 2px; }
+.heat-row { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; }
+.heat-cell {
+  aspect-ratio: 1.2;
+  background: rgba(245,241,232,0.03);
+  position: relative;
+}
+.heat-cell.peak { background: var(--radio); box-shadow: 0 0 6px var(--radio-glow); }
+.heat-axis { display: grid; grid-template-columns: 60px repeat(6, 1fr); margin-top: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); letter-spacing: 0.06em; }
+
+/* ==========================================================================
+   16 — FORECAST
+   ========================================================================== */
+.fc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+.fc-day {
+  background: var(--paper-deep);
+  padding: 18px 12px;
+  text-align: left;
+  position: relative;
+  min-height: 160px;
+  transition: background 280ms;
+}
+.fc-day:hover { background: rgba(197, 255, 61, 0.04); }
+.fc-day .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.fc-day .ic { font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--ink); margin-top: 18px; line-height: 1.3; }
+.fc-day .hi { font-family: var(--font-display); font-weight: 500; font-size: 28px; margin-top: 12px; }
+.fc-day .lo { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+.fc-day .grade {
+  position: absolute; top: 14px; right: 14px;
+  font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1;
+}
+.fc-day .grade.A { color: var(--radio); }
+.fc-day .grade.B { color: var(--ink); }
+.fc-day .grade.C { color: var(--warn); }
+.fc-day .grade.D { color: var(--danger); }
+@media (max-width: 720px) { .fc-grid { grid-template-columns: repeat(4, 1fr); } }
+
+/* ==========================================================================
+   17 — FISH CARDS (engraved)
+   ========================================================================== */
+.fish-grid { display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+.fish-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+@media (max-width: 760px) { .fish-grid.cols-2 { grid-template-columns: 1fr; } }
+.fish-card {
+  background: var(--paper-deep);
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  position: relative;
+  transition: background 280ms;
+}
+.fish-card:hover { background: rgba(245,241,232,0.02); }
+.fish-card .num {
+  font-family: var(--font-mono); font-size: 11px; color: var(--radio); letter-spacing: 0.14em;
+}
+.fish-illustration {
+  width: 100%; aspect-ratio: 2.2/1; height: auto;
+  stroke: var(--ink); fill: none;
+  transition: transform 400ms var(--spring);
+}
+.fish-card:hover .fish-illustration { transform: scale(1.02); }
+.fish-card.swim .fish-body { animation: swim 1.4s var(--ease-quart); }
+@keyframes swim {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  25% { transform: translateX(-2px) rotate(-1deg); }
+  50% { transform: translateX(0) rotate(0); }
+  75% { transform: translateX(2px) rotate(1deg); }
+}
+.fish-name { font-family: var(--font-display); font-size: 32px; font-weight: 500; line-height: 1; }
+.fish-latin { font-family: var(--font-display); font-size: 14px; font-style: italic; color: var(--ink-dim); margin-top: 4px; }
+.fish-zh { font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); letter-spacing: 0.1em; margin-top: 4px; }
+.fish-data {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--hair);
+  margin-top: 14px;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.fish-data > div { background: var(--paper-deep); padding: 12px; }
+.fish-data .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.fish-data .v { font-family: var(--font-mono); font-size: 12px; margin-top: 4px; }
+.fish-tactic { font-family: var(--font-display); font-style: italic; font-size: 16px; line-height: 1.4; color: var(--ink); }
+.fish-likeli { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+.fish-likeli .bar { flex: 1; height: 1px; background: var(--hair); position: relative; }
+.fish-likeli .bar::after { content: ""; position: absolute; left: 0; top: -1px; bottom: -1px; width: var(--w, 0%); background: var(--radio); box-shadow: 0 0 6px var(--radio-glow); }
+
+/* ==========================================================================
+   18 — GEAR + BAIT
+   ========================================================================== */
+.gear-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+@media (max-width: 700px) { .gear-list { grid-template-columns: 1fr; } }
+.gear-item {
+  background: var(--paper-deep);
+  padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  min-height: 56px;
+  transition: background 200ms;
+  text-align: left;
+  width: 100%;
+}
+.gear-item:hover { background: rgba(245,241,232,0.02); }
+.gear-item.cond { background: linear-gradient(90deg, rgba(212,165,116,0.06), var(--paper-deep)); }
+.gear-box {
+  width: 18px; height: 18px;
+  border: 1px solid var(--rule);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  transition: all 240ms var(--spring);
+}
+.gear-item.checked .gear-box { background: var(--radio); border-color: var(--radio); }
+.gear-item.checked .gear-box::after { content: ""; width: 8px; height: 4px; border-left: 1.5px solid var(--paper); border-bottom: 1.5px solid var(--paper); transform: rotate(-45deg) translate(0, -1px); }
+.gear-label { flex: 1; font-size: 14px; }
+.gear-item.checked .gear-label { color: var(--ink-dim); text-decoration: line-through; }
+.gear-tag { font-family: var(--font-mono); font-size: 9px; color: var(--warn); letter-spacing: 0.14em; text-transform: uppercase; }
+
+.bait-list { display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+.bait-item { background: var(--paper-deep); padding: 18px; }
+.bait-item .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--radio); }
+.bait-item h4 { font-family: var(--font-display); font-size: 18px; font-weight: 500; margin: 8px 0 4px; }
+.bait-item p { margin: 0; font-size: 13px; color: var(--ink-dim); line-height: 1.5; }
+
+/* ==========================================================================
+   19 — DECK (sonar + motor)
+   ========================================================================== */
+.deck-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; }
+@media (max-width: 1000px) { .deck-grid { grid-template-columns: 1fr; } }
+.sim-flag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--warn); border: 1px solid var(--warn); padding: 4px 8px; }
+.sonar-card { padding: 24px; }
+.sonar-stage { aspect-ratio: 1; max-width: 480px; margin: 0 auto; position: relative; }
+.sonar-stage svg { width: 100%; height: 100%; }
+.sonar-readout {
+  margin-top: 18px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--hair); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+}
+.sonar-readout > div { background: var(--paper-deep); padding: 12px; }
+.sonar-readout .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.sonar-readout .v { font-family: var(--font-mono); font-size: 14px; margin-top: 4px; color: var(--radio); }
+
+.btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 14px 22px;
+  min-height: 44px;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  background: transparent;
+  transition: background 200ms, color 200ms, border-color 200ms;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary { background: var(--radio); color: var(--paper-deep); border-color: var(--radio); }
+.btn.primary:hover { background: var(--ink); color: var(--paper-deep); border-color: var(--ink); }
+.btn.ghost { color: var(--ink-dim); border-color: var(--hair); }
+.btn:active { transform: scale(0.96); }
+
+/* motor */
+.motor-card { padding: 24px; display: grid; gap: 22px; }
+.thumbwheel { position: relative; width: 200px; height: 200px; margin: 12px auto; touch-action: none; }
+.thumbwheel svg { width: 100%; height: 100%; }
+.thumbwheel .needle { transform-origin: 100px 100px; transition: transform 100ms linear; }
+.motor-row { display: grid; gap: 8px; }
+.motor-row .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); display: flex; justify-content: space-between; }
+.motor-row .lbl .val { color: var(--radio); }
+input[type=range].motor-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 1px; background: var(--rule); outline: none;
+  cursor: none;
+}
+input[type=range].motor-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--radio); box-shadow: 0 0 10px var(--radio-glow);
+}
+input[type=range].motor-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--radio); border: 0; }
+
+.motor-toggles { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+.motor-toggle { background: var(--paper-deep); padding: 14px; text-align: left; transition: background 200ms; min-height: 56px; }
+.motor-toggle.on { background: var(--radio); color: var(--paper-deep); }
+.motor-toggle .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; }
+.motor-toggle .v { font-family: var(--font-display); font-weight: 500; font-size: 18px; margin-top: 4px; }
+
+/* ==========================================================================
+   20 — LOG
+   ========================================================================== */
+.log-form-card { padding: 28px; }
+.log-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.log-form .full { grid-column: 1 / -1; }
+.field { display: grid; gap: 6px; }
+.field label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.field input, .field select, .field textarea {
+  background: transparent;
+  border: 0; border-bottom: 1px solid var(--hair);
+  padding: 10px 0; min-height: 44px;
+  font-family: var(--font-body); font-size: 16px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 200ms;
+  cursor: none;
+}
+@media (pointer: coarse) { .field input, .field select, .field textarea { cursor: text; } }
+.field input:focus, .field textarea:focus, .field select:focus { border-bottom-color: var(--radio); }
+.field textarea { resize: vertical; min-height: 80px; padding-top: 10px; }
+.stars-input { display: inline-flex; gap: 8px; }
+.stars-input button { font-family: var(--font-display); font-size: 24px; color: var(--ink-ghost); transition: color 200ms; min-width: 32px; min-height: 44px; }
+.stars-input button.on { color: var(--radio); }
+
+.log-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--hair); border: 1px solid var(--hair);
+  margin-bottom: 24px;
+}
+.log-stat { background: var(--paper-deep); padding: 18px; }
+.log-stat .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+.log-stat .v { font-family: var(--font-display); font-weight: 500; font-size: 28px; margin-top: 8px; line-height: 1; }
+.log-stat .v.radio { color: var(--radio); }
+.log-stat .sub { font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); margin-top: 4px; }
+
+.log-list { display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+.log-row {
+  background: var(--paper-deep);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.log-row .swipe-actions {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  display: flex; align-items: center;
+  background: var(--danger);
+}
+.log-row .swipe-actions button { padding: 0 24px; height: 100%; color: var(--ink); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
+.log-row .content {
+  background: var(--paper-deep);
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 16px; align-items: center;
+  width: 100%;
+  transition: transform 280ms var(--spring);
+  position: relative;
+  z-index: 1;
+}
+.log-row .icon-fish { width: 40px; height: 40px; flex-shrink: 0; opacity: 0.7; }
+.log-row .meta { font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); letter-spacing: 0.06em; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 14px; }
+.log-row h5 { font-family: var(--font-display); font-size: 18px; font-weight: 500; margin: 0; }
+.log-row .size { font-family: var(--font-mono); font-size: 13px; color: var(--radio); }
+.log-row .actions { display: flex; gap: 8px; }
+.log-empty {
+  padding: 60px 20px; text-align: center;
+  font-family: var(--font-display); font-style: italic; font-size: 22px;
+  color: var(--ink-dim);
+  border: 1px dashed var(--hair);
+  position: relative;
+}
+.log-empty::after {
+  content: ""; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cpath d='M20 50 Q60 30 100 48 Q140 30 180 50 L160 60 L180 70 Q140 60 100 52 Q60 60 20 70 Z' fill='none' stroke='%23f5f1e8' stroke-width='1' opacity='0.04'/%3E%3C/svg%3E");
+  background-position: center; background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   21 — WALL
+   ========================================================================== */
+.wall-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+@media (max-width: 700px) { .wall-grid { grid-template-columns: 1fr; } }
+.wall-item { background: var(--paper-deep); padding: 22px; display: grid; gap: 10px; transition: background 200ms; }
+.wall-item:hover { background: rgba(245,241,232,0.02); }
+.wall-head { display: flex; justify-content: space-between; align-items: center; }
+.wall-user { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.06em; }
+.wall-time { font-family: var(--font-mono); font-size: 10px; color: var(--ink-ghost); letter-spacing: 0.06em; }
+.wall-fish { font-family: var(--font-display); font-size: 24px; font-weight: 500; }
+.wall-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); display: flex; gap: 14px; flex-wrap: wrap; }
+.wall-size { color: var(--radio); }
+
+.trending {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+}
+.trend-pill {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--radio); border: 1px solid var(--radio); padding: 6px 12px;
+}
+
+/* ==========================================================================
+   22 — SHARE CARD
+   ========================================================================== */
+#share-card {
+  position: fixed; left: -9999px; top: 0;
+  width: 1080px; height: 1350px;
+  background: var(--paper-deep);
+  color: var(--ink);
+  padding: 80px;
+  font-family: var(--font-body);
+  display: flex; flex-direction: column;
+}
+#share-card .sc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+#share-card .sc-brand { display: flex; align-items: center; gap: 12px; }
+#share-card .sc-brand svg { width: 56px; height: 56px; stroke: var(--ink); fill: none; stroke-width: 1.6; }
+#share-card .sc-brand .name { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: 0.5em; }
+#share-card .sc-meta { font-family: var(--font-mono); font-size: 14px; color: var(--ink-dim); text-align: right; line-height: 1.7; letter-spacing: 0.08em; }
+#share-card .sc-fish { flex: 1; display: grid; place-items: center; padding: 60px 0; }
+#share-card .sc-fish svg { width: 70%; stroke: var(--ink); fill: none; stroke-width: 2; }
+#share-card .sc-name { font-family: var(--font-display); font-weight: 600; font-size: 96px; line-height: 0.95; letter-spacing: -0.03em; }
+#share-card .sc-latin { font-family: var(--font-display); font-style: italic; font-size: 28px; color: var(--ink-dim); margin-top: 8px; }
+#share-card .sc-stats { display: flex; gap: 60px; margin-top: 32px; }
+#share-card .sc-stats > div { font-family: var(--font-mono); font-size: 14px; color: var(--ink-dim); letter-spacing: 0.08em; }
+#share-card .sc-stats .v { font-family: var(--font-display); font-weight: 600; font-size: 56px; color: var(--radio); margin-top: 8px; line-height: 1; }
+#share-card .sc-bottom { font-family: var(--font-mono); font-size: 12px; color: var(--ink-ghost); letter-spacing: 0.1em; border-top: 1px solid var(--hair); padding-top: 24px; display: flex; justify-content: space-between; }
+#share-card .sc-watermark { position: absolute; bottom: 80px; right: 80px; opacity: 0.04; width: 200px; }
+
+/* ==========================================================================
+   23 — MODAL
+   ========================================================================== */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(6,8,11,0.85);
+  z-index: 9000;
+  display: none;
+  place-items: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 20px;
+}
+.modal.open { display: grid; }
+.modal-body {
+  max-width: 520px; width: 100%;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule);
+  padding: 32px;
+}
+.modal-body h3 { font-family: var(--font-display); font-size: 28px; margin: 0 0 12px; font-weight: 500; }
+.modal-body p { color: var(--ink-dim); font-size: 15px; line-height: 1.6; }
+.modal-body .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; flex-wrap: wrap; }
+.modal-body input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--rule); padding: 12px 0; font-size: 16px; color: var(--ink); outline: none; cursor: none; }
+
+/* ==========================================================================
+   24 — CONDITION OVERLAYS (adaptive UI)
+   ========================================================================== */
+.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+.fx-wind {
+  background-image: repeating-linear-gradient(90deg, transparent 0 4px, rgba(245,241,232,0.025) 4px 5px);
+  opacity: 0; transition: opacity 800ms;
+}
+body.windy .fx-wind { opacity: 1; }
+.fx-rain {
+  background-image: repeating-linear-gradient(180deg, rgba(122,155,142,0.05) 0 1px, transparent 1px 12px);
+  opacity: 0; transition: opacity 800ms;
+  animation: rainFall 0.8s linear infinite;
+}
+body.rainy .fx-rain { opacity: 1; }
+@keyframes rainFall { from { background-position: 0 0; } to { background-position: 0 12px; } }
+.fx-stars { background-image: radial-gradient(1px 1px at 20% 20%, var(--ink) 50%, transparent), radial-gradient(1px 1px at 60% 35%, var(--ink) 50%, transparent), radial-gradient(1px 1px at 80% 60%, var(--ink) 50%, transparent), radial-gradient(1px 1px at 30% 80%, var(--ink) 50%, transparent), radial-gradient(1px 1px at 75% 85%, var(--ink) 50%, transparent), radial-gradient(1px 1px at 10% 50%, var(--ink) 50%, transparent), radial-gradient(1px 1px at 50% 10%, var(--ink) 50%, transparent); background-size: 100% 100%; opacity: 0; transition: opacity 800ms; }
+body.night .fx-stars { opacity: 0.5; }
+body.night { background: #04060a; }
+body.night { --paper: #06080d; --paper-deep: #04060a; }
+body.golden { --ink: #f5e8d4; --radio: #ffb84d; --radio-glow: rgba(255, 184, 77, 0.3); }
+
+/* PULL TO REFRESH */
+.ptr {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 60px;
+  display: grid; place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 50;
+  transition: opacity 200ms;
+}
+.ptr.active { opacity: 1; }
+.ptr svg { width: 28px; height: 28px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================================
+   25 — FOOTER
+   ========================================================================== */
+footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--hair); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); letter-spacing: 0.08em; }
+
+/* ==========================================================================
+   26 — RESPONSIVE
+   ========================================================================== */
+@media (max-width: 760px) {
+  .meter-card { grid-template-columns: 1fr; padding: 24px; }
+  .hero-row { grid-template-columns: 1fr; }
+  .hero-stamp { text-align: left; }
+  .log-form { grid-template-columns: 1fr; }
+  .topbar { gap: 12px; }
+  .tabs { order: 3; width: 100%; justify-content: space-between; }
+  .top-utils { order: 2; margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.skel { background: linear-gradient(90deg, var(--hair) 0%, var(--rule) 50%, var(--hair) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; color: transparent; display: inline-block; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+</style>
+</head>
+<body>
+
+<!-- =========================================================================
+     SPLASH / PRE-LOAD
+     ========================================================================= -->
+<div id="splash" aria-hidden="true">
+  <div class="splash-mark">
+    <svg class="splash-fish" viewBox="0 0 400 200" aria-label="TROLL sailfish">
+      <use href="#sailfish-art" />
+    </svg>
+    <div class="splash-word">
+      <span class="rule"></span>
+      <span class="name">TROLL</span>
+      <span class="rule"></span>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     CURSOR + RIPPLE LAYERS
+     ========================================================================= -->
+<div id="cursor-layer" aria-hidden="true">
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+</div>
+<div id="ripple-layer" aria-hidden="true"></div>
+
+<!-- FX condition overlays -->
+<div class="fx-layer fx-wind" aria-hidden="true"></div>
+<div class="fx-layer fx-rain" aria-hidden="true"></div>
+<div class="fx-layer fx-stars" aria-hidden="true"></div>
+
+<!-- Pull to refresh -->
+<div class="ptr" id="ptr" aria-hidden="true">
+  <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" style="color:var(--radio);">
+    <circle cx="12" cy="12" r="9" stroke-dasharray="40 20" />
+  </svg>
+</div>
+
+<div class="app">
+
+  <!-- TOPBAR -->
+  <header class="topbar" role="banner">
+    <a class="brand" href="#" aria-label="TROLL home" data-action="home">
+      <div class="brand-fish">
+        <svg viewBox="0 0 100 50" aria-hidden="true">
+          <use href="#sailfish-mark" />
+        </svg>
+      </div>
+      <div class="brand-word">
+        <span class="rule"></span>
+        <span class="name" id="brand-name">TROLL</span>
+        <span class="rule"></span>
+      </div>
+    </a>
+
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" aria-selected="true" data-view="dashboard">dash</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="deck">deck</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="log">log</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="wall">wall</button>
+    </nav>
+
+    <div class="top-utils">
+      <div class="loc-toggle" id="loc-toggle" aria-label="Location">
+        <button data-loc="saikung" aria-pressed="true">Sai Kung</button>
+        <button data-loc="stanley" aria-pressed="false">Stanley</button>
+      </div>
+      <button class="icon-btn" id="share-app-btn" aria-label="Share TROLL">
+        <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </button>
+      <span class="live-pip" id="live-pip">live</span>
+    </div>
+  </header>
+
+  <!-- TYPHOON BANNER (hidden unless triggered) -->
+  <div class="typhoon-banner" id="typhoon-banner" role="alert">
+    <div>
+      <h3 id="typhoon-title">T8 hoisted. Do not fish today.</h3>
+      <p id="typhoon-sub">Storm signal active. Stay home.</p>
+    </div>
+    <span class="sigil" id="typhoon-sigil">T8</span>
+  </div>
+
+  <!-- WARNING BANNER -->
+  <div class="warn-banner" id="warn-banner"><span id="warn-text"></span></div>
+
+  <!-- ====================================================================
+       VIEW: DASHBOARD
+       ==================================================================== -->
+  <section class="view" data-view="dashboard" data-active="true" role="tabpanel" aria-labelledby="tab-dash">
+
+    <!-- HERO -->
+    <div class="hero-row">
+      <div>
+        <div class="t-mono-s" style="margin-bottom: 18px;">
+          <span class="radio-text">●</span> <span id="hero-coords">22.3811°N · 114.2683°E</span> &nbsp;·&nbsp; SHORE FISHING · BEGINNER
+        </div>
+        <h1 class="hero-line-1" id="hero-headline">Reading the water<em>.</em></h1>
+        <div class="hero-line-2" id="hero-sub">SAI KUNG · TIDE INCOMING · SUNSET 19:04</div>
+      </div>
+      <div class="hero-stamp">
+        <div id="hero-date">—</div>
+        <div id="hero-clock">—</div>
+        <div id="hero-loc-name" class="dim">—</div>
+      </div>
+    </div>
+
+    <!-- SAFETY METER -->
+    <section class="section">
+      <div class="section-head">
+        <div><span class="section-num">01.</span><span class="section-title">Safety Index</span></div>
+        <div class="section-meta" id="meter-update">UPDATED —</div>
+      </div>
+      <div class="card feature meter-card">
+        <span class="corner-coord tl">N0001 · SAFETY</span>
+        <span class="corner-coord br" id="meter-loc-coord">—</span>
+
+        <div class="meter-ring">
+          <svg viewBox="0 0 240 240">
+            <g class="meter-ticks">
+              <!-- ticks generated by JS -->
+            </g>
+            <circle class="meter-bg" cx="120" cy="120" r="100" />
+            <circle id="meter-fg" class="meter-fg" cx="120" cy="120" r="100"
+                    pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+          </svg>
+          <div class="meter-center">
+            <div>
+              <div class="meter-num" id="meter-num">—<small>/100</small></div>
+              <div class="meter-status" id="meter-status">analysing</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="meter-breakdown" id="meter-breakdown">
+            <div class="meter-break-item"><span class="meter-break-label">Wind</span><span class="meter-break-bar" data-id="wind"></span><span class="meter-break-val" data-val="wind">—</span></div>
+            <div class="meter-break-item"><span class="meter-break-label">Wave</span><span class="meter-break-bar" data-id="wave"></span><span class="meter-break-val" data-val="wave">—</span></div>
+            <div class="meter-break-item"><span class="meter-break-label">Rain</span><span class="meter-break-bar" data-id="rain"></span><span class="meter-break-val" data-val="rain">—</span></div>
+            <div class="meter-break-item"><span class="meter-break-label">UV</span><span class="meter-break-bar" data-id="uv"></span><span class="meter-break-val" data-val="uv">—</span></div>
+            <div class="meter-break-item"><span class="meter-break-label">Warnings</span><span class="meter-break-bar" data-id="warn"></span><span class="meter-break-val" data-val="warn">—</span></div>
+          </div>
+          <p class="meter-tip" id="meter-tip">Reading conditions…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONDITIONS + MOON -->
+    <section class="section grid">
+      <div class="span-9">
+        <div class="section-head" style="margin-bottom: 0; border: 0; padding: 0;">
+          <div><span class="section-num">02.</span><span class="section-title">Now</span></div>
+          <span class="section-meta" id="cond-loc">—</span>
+        </div>
+        <div class="card cond-card" style="margin-top: 24px;">
+          <span class="corner-coord tl">N0002 · CONDITIONS</span>
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+            <div>
+              <div class="cond-temp"><span id="cond-temp">—</span><span class="deg">°</span></div>
+              <div class="cond-desc" id="cond-desc">—</div>
+              <div class="t-mono-s" id="cond-feels" style="margin-top: 8px;">FEELS LIKE —°</div>
+            </div>
+            <div class="compass">
+              <span class="n">N</span><span class="s">S</span><span class="e">E</span><span class="w">W</span>
+              <div class="compass-arrow" id="wind-arrow"></div>
+            </div>
+          </div>
+          <div class="cond-grid">
+            <div class="cond-cell"><div class="lbl">Wind</div><div class="val"><span id="cond-wind">—</span></div><div class="sub" id="cond-wind-sub">— km/h</div></div>
+            <div class="cond-cell"><div class="lbl">Humidity</div><div class="val"><span id="cond-humid">—</span>%</div><div class="sub">RELATIVE</div></div>
+            <div class="cond-cell"><div class="lbl">UV</div><div class="val" id="cond-uv">—</div><div class="sub" id="cond-uv-sub">—</div></div>
+            <div class="cond-cell"><div class="lbl">Rain</div><div class="val"><span id="cond-rain">—</span><span style="font-size:14px;color:var(--ink-dim)">mm</span></div><div class="sub">LAST HR</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="span-5">
+        <div class="section-head" style="margin-bottom: 0; border: 0; padding: 0;">
+          <div><span class="section-num">03.</span><span class="section-title">Moon</span></div>
+          <span class="section-meta" id="moon-stars">— / 5</span>
+        </div>
+        <div class="card moon-card" style="margin-top: 24px;">
+          <span class="corner-coord tl">N0003 · LUNAR</span>
+          <div class="moon-vis">
+            <div class="moon-disk"><div class="moon-shadow" id="moon-shadow" style="left:0;right:50%;"></div></div>
+            <div class="moon-data">
+              <div class="moon-name" id="moon-name">—</div>
+              <div class="moon-illum" id="moon-illum">—</div>
+              <div class="moon-rise" id="moon-rise">—</div>
+            </div>
+          </div>
+          <div class="solunar-grid">
+            <div class="solunar-cell major"><div class="k">Major Feed</div><div class="v" id="solunar-major">—</div></div>
+            <div class="solunar-cell"><div class="k">Minor Feed</div><div class="v" id="solunar-minor">—</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIDE -->
+    <section class="section">
+      <div class="section-head">
+        <div><span class="section-num">04.</span><span class="section-title">Tide · 24h</span></div>
+        <span class="section-meta" id="tide-state">—</span>
+      </div>
+      <div class="card tide-card">
+        <span class="corner-coord tl">N0004 · TIDE</span>
+        <canvas id="tide-chart" width="1200" height="240"></canvas>
+        <div class="tide-extrema" id="tide-extrema"></div>
+      </div>
+    </section>
+
+    <!-- HEAT -->
+    <section class="section">
+      <div class="section-head">
+        <div><span class="section-num">05.</span><span class="section-title">Best Hours · 7 days</span></div>
+        <span class="section-meta">HIGHER → BETTER</span>
+      </div>
+      <div class="card">
+        <span class="corner-coord tl">N0005 · HEAT</span>
+        <div class="heat" id="heat"></div>
+        <div class="heat-axis" id="heat-axis"><div></div><div>00</div><div>04</div><div>08</div><div>12</div><div>16</div><div>20</div></div>
+      </div>
+    </section>
+
+    <!-- FORECAST -->
+    <section class="section">
+      <div class="section-head">
+        <div><span class="section-num">06.</span><span class="section-title">9-Day Outlook</span></div>
+        <span class="section-meta">VIA HKO</span>
+      </div>
+      <div class="fc-grid" id="fc-grid"></div>
+    </section>
+
+    <!-- TARGET FISH -->
+    <section class="section">
+      <div class="section-head">
+        <div><span class="section-num">07.</span><span class="section-title">What's biting</span></div>
+        <span class="section-meta" id="fish-context">—</span>
+      </div>
+      <div class="fish-grid cols-2" id="fish-grid"></div>
+    </section>
+
+    <!-- GEAR + BAIT -->
+    <section class="section grid">
+      <div class="span-8">
+        <div class="section-head" style="margin-bottom: 0; border: 0; padding: 0;">
+          <div><span class="section-num">08.</span><span class="section-title">Pack</span></div>
+          <button class="btn ghost" id="reset-checklist">Reset</button>
+        </div>
+        <div class="gear-list" id="gear-list" style="margin-top: 24px;"></div>
+      </div>
+      <div class="span-6">
+        <div class="section-head" style="margin-bottom: 0; border: 0; padding: 0;">
+          <div><span class="section-num">09.</span><span class="section-title">Bait & lure</span></div>
+        </div>
+        <div class="bait-list" id="bait-list" style="margin-top: 24px;"></div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ====================================================================
+       VIEW: DECK (sonar + motor)
+       ==================================================================== -->
+  <section class="view" data-view="deck" role="tabpanel">
+    <div class="hero-row">
+      <div>
+        <div class="t-mono-s" style="margin-bottom: 18px;">
+          <span class="radio-text">●</span> DECK INTERFACE · HARDWARE BRIDGE
+        </div>
+        <h1 class="hero-line-1">Eyes <em>under</em>water.</h1>
+        <div class="hero-line-2">SONAR · TROLLING MOTOR · GPS LOCK</div>
+      </div>
+      <div class="hero-stamp">
+        <span class="sim-flag">STATUS: SIMULATED · CONNECT DEVICE</span>
+      </div>
+    </div>
+
+    <div class="deck-grid">
+      <div>
+        <div class="section-head">
+          <div><span class="section-num">10.</span><span class="section-title">Sonar Sweep</span></div>
+          <span class="live-pip">simulated</span>
+        </div>
+        <div class="card sonar-card">
+          <div class="sonar-stage">
+            <svg id="sonar-svg" viewBox="0 0 400 400" aria-label="sonar display">
+              <defs>
+                <radialGradient id="sonar-bg-grad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#0a1a14"/>
+                  <stop offset="100%" stop-color="#04080a"/>
+                </radialGradient>
+                <linearGradient id="sweep-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="var(--radio)" stop-opacity="0.8"/>
+                  <stop offset="100%" stop-color="var(--radio)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <circle cx="200" cy="200" r="190" fill="url(#sonar-bg-grad)" stroke="var(--rule)" stroke-width="0.5"/>
+              <circle cx="200" cy="200" r="50" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+              <circle cx="200" cy="200" r="100" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+              <circle cx="200" cy="200" r="150" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+              <circle cx="200" cy="200" r="190" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+              <line x1="200" y1="10" x2="200" y2="390" stroke="var(--hair)" stroke-width="0.5"/>
+              <line x1="10" y1="200" x2="390" y2="200" stroke="var(--hair)" stroke-width="0.5"/>
+              <text x="200" y="56" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--ink-ghost)" letter-spacing="2">5m</text>
+              <text x="200" y="106" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--ink-ghost)" letter-spacing="2">10m</text>
+              <text x="200" y="156" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--ink-ghost)" letter-spacing="2">20m</text>
+              <text x="200" y="206" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--ink-ghost)" letter-spacing="2">40m</text>
+              <g id="sonar-blips"></g>
+              <g id="sonar-sweep" style="transform-origin: 200px 200px;">
+                <path d="M 200 200 L 200 10 A 190 190 0 0 1 380 220 Z" fill="url(#sweep-grad)" opacity="0.4"/>
+                <line x1="200" y1="200" x2="200" y2="10" stroke="var(--radio)" stroke-width="1" filter="drop-shadow(0 0 4px var(--radio))"/>
+              </g>
+              <circle cx="200" cy="200" r="3" fill="var(--radio)" filter="drop-shadow(0 0 6px var(--radio))"/>
+            </svg>
+          </div>
+          <div class="sonar-readout">
+            <div><div class="k">Depth</div><div class="v" id="son-depth">—</div></div>
+            <div><div class="k">Water Temp</div><div class="v" id="son-temp">—</div></div>
+            <div><div class="k">Bottom</div><div class="v" id="son-bottom">ROCKY</div></div>
+            <div><div class="k">Contacts</div><div class="v" id="son-contacts">0</div></div>
+          </div>
+          <div style="margin-top: 22px;">
+            <button class="btn" id="pair-sonar-btn">Pair Sonar Device</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">
+          <div><span class="section-num">11.</span><span class="section-title">Trolling Motor</span></div>
+          <span class="live-pip">simulated</span>
+        </div>
+        <div class="card motor-card">
+          <div class="thumbwheel" id="thumbwheel" aria-label="Direction">
+            <svg viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="90" fill="none" stroke="var(--rule)" stroke-width="0.5"/>
+              <circle cx="100" cy="100" r="70" fill="none" stroke="var(--hair)" stroke-width="0.5"/>
+              <g class="needle" id="thumb-needle">
+                <line x1="100" y1="100" x2="100" y2="20" stroke="var(--radio)" stroke-width="1.5" filter="drop-shadow(0 0 4px var(--radio))"/>
+                <circle cx="100" cy="20" r="4" fill="var(--radio)"/>
+              </g>
+              <text x="100" y="14" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--ink-dim)" letter-spacing="2">N</text>
+              <text x="100" y="194" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--ink-dim)" letter-spacing="2">S</text>
+              <text x="194" y="104" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--ink-dim)" letter-spacing="2">E</text>
+              <text x="6" y="104" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--ink-dim)" letter-spacing="2">W</text>
+              <circle cx="100" cy="100" r="4" fill="var(--ink)"/>
+            </svg>
+          </div>
+          <div class="motor-row">
+            <div class="lbl"><span>Speed</span><span class="val"><span id="motor-speed">3</span> / 10</span></div>
+            <input type="range" min="0" max="10" value="3" class="motor-slider" id="motor-speed-input" />
+          </div>
+          <div class="motor-toggles">
+            <button class="motor-toggle" data-toggle="anchor" id="anchor-toggle"><div class="k">Anchor</div><div class="v">Released</div></button>
+            <button class="motor-toggle" data-toggle="lock" id="lock-toggle"><div class="k">Spot Lock</div><div class="v">Off</div></button>
+          </div>
+          <button class="btn ghost" style="justify-self: flex-start;" id="connect-motor-btn">Connect Motor Hardware</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       VIEW: LOG
+       ==================================================================== -->
+  <section class="view" data-view="log" role="tabpanel">
+    <div class="hero-row">
+      <div>
+        <div class="t-mono-s" style="margin-bottom: 18px;"><span class="radio-text">●</span> PERSONAL LOG · LOCAL ONLY</div>
+        <h1 class="hero-line-1">Stop trolling<em>,</em><br/>start logging.</h1>
+        <div class="hero-line-2">EVERY CATCH · EVERY CONDITION · YOURS</div>
+      </div>
+      <div class="hero-stamp">
+        <div id="log-count-stamp">— ENTRIES</div>
+        <div class="dim">SYNC: LOCAL</div>
+      </div>
+    </div>
+
+    <div class="log-stats">
+      <div class="log-stat"><div class="k">Total catches</div><div class="v radio" id="ls-total">0</div><div class="sub">ALL TIME</div></div>
+      <div class="log-stat"><div class="k">Top species</div><div class="v" id="ls-species">—</div><div class="sub" id="ls-species-sub">—</div></div>
+      <div class="log-stat"><div class="k">Personal best</div><div class="v" id="ls-big">—</div><div class="sub" id="ls-big-sub">—</div></div>
+    </div>
+
+    <section class="section grid" style="margin-top: 12px;">
+      <div class="span-7">
+        <div class="card log-form-card">
+          <span class="corner-coord tl">N0012 · NEW ENTRY</span>
+          <h3 class="t-h2" style="margin: 0 0 20px;">Log a catch</h3>
+          <form class="log-form" id="log-form">
+            <div class="field"><label>Date / time</label><input type="datetime-local" id="log-time" /></div>
+            <div class="field"><label>Spot</label><input type="text" id="log-spot" placeholder="Near pier" /></div>
+            <div class="field full"><label>Species</label><input type="text" id="log-species" placeholder="Mangrove Snapper" required /></div>
+            <div class="field"><label>Size · cm</label><input type="number" id="log-size" min="0" step="0.5" placeholder="28" /></div>
+            <div class="field"><label>Bait / lure</label><input type="text" id="log-bait" placeholder="Live shrimp" /></div>
+            <div class="field full"><label>Notes</label><textarea id="log-notes" placeholder="What worked, conditions, where you stood…"></textarea></div>
+            <div class="field full"><label>Rating</label>
+              <div class="stars-input" id="log-rating" data-rating="3">
+                <button type="button" class="on">★</button><button type="button" class="on">★</button><button type="button" class="on">★</button><button type="button">★</button><button type="button">★</button>
+              </div>
+            </div>
+            <div class="full" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+              <button type="submit" class="btn primary">Save catch</button>
+              <button type="button" class="btn ghost" id="export-csv">Export CSV</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="span-7">
+        <div class="section-head" style="margin: 0 0 18px;">
+          <div><span class="section-num">13.</span><span class="section-title">Recent</span></div>
+          <select id="log-filter" class="btn ghost" style="text-transform: lowercase; min-height: 44px; cursor: none;">
+            <option value="all">all locations</option>
+            <option value="saikung">sai kung</option>
+            <option value="stanley">stanley</option>
+          </select>
+        </div>
+        <div id="log-list-wrap"></div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ====================================================================
+       VIEW: WALL
+       ==================================================================== -->
+  <section class="view" data-view="wall" role="tabpanel">
+    <div class="hero-row">
+      <div>
+        <div class="t-mono-s" style="margin-bottom: 18px;"><span class="radio-text">●</span> COMMUNITY WALL · ANONYMOUS</div>
+        <h1 class="hero-line-1">Who's <em>onto</em><br/>something.</h1>
+        <div class="hero-line-2">RECENT 48H · SIMULATED FEED</div>
+      </div>
+      <div class="hero-stamp">
+        <div id="wall-count">— catches</div>
+        <div class="dim">CONSENT-BASED</div>
+      </div>
+    </div>
+
+    <div class="trending" id="wall-trending"></div>
+    <div class="wall-grid" id="wall-grid"></div>
+  </section>
+
+  <footer>
+    <div>HKO · OPEN-METEO MARINE · LOCAL MOON · TROLL v2.0</div>
+    <div id="footer-stamp">22.3811°N · 114.2683°E</div>
+  </footer>
+</div>
+
+<!-- =========================================================================
+     SHARE CARD (off-screen, used for image export)
+     ========================================================================= -->
+<div id="share-card" aria-hidden="true">
+  <div class="sc-top">
+    <div class="sc-brand">
+      <svg viewBox="0 0 100 50"><use href="#sailfish-mark"/></svg>
+      <span class="name">TROLL</span>
+    </div>
+    <div class="sc-meta">
+      <div id="sc-date">—</div>
+      <div id="sc-location">—</div>
+      <div id="sc-coords">22.3811°N · 114.2683°E</div>
+    </div>
+  </div>
+  <div class="sc-fish">
+    <svg id="sc-fish-svg" viewBox="0 0 400 200"><use id="sc-fish-use" href="#fish-snapper"/></svg>
+  </div>
+  <div>
+    <div class="sc-name" id="sc-name">—</div>
+    <div class="sc-latin" id="sc-latin">—</div>
+  </div>
+  <div class="sc-stats">
+    <div>SIZE<div class="v" id="sc-size">—</div></div>
+    <div>CONDITIONS<div class="v" style="font-size:32px;color:var(--ink);" id="sc-cond">—</div></div>
+  </div>
+  <div class="sc-bottom" style="margin-top: auto;">
+    <div>LOGGED WITH TROLL</div>
+    <div id="sc-stamp">—</div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     MODAL
+     ========================================================================= -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-body">
+    <h3 id="modal-title">—</h3>
+    <p id="modal-body">—</p>
+    <div id="modal-input-wrap" style="display:none; margin-top: 16px;">
+      <input type="email" id="modal-input" placeholder="you@email.com" />
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="modal-cancel">Close</button>
+      <button class="btn primary" id="modal-confirm" style="display:none;">Notify me</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     SVG SYMBOL LIBRARY (engraved fish + sailfish)
+     ========================================================================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Sailfish (logo, simplified) -->
+    <symbol id="sailfish-mark" viewBox="0 0 100 50">
+      <path d="M3 26 Q22 18 38 24 Q44 18 52 22 L72 18 L92 6 L78 22 L92 28 L72 36 L52 32 Q44 36 38 30 Q22 36 3 28 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M38 24 Q35 14 32 6 Q42 12 48 22" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <line x1="78" y1="22" x2="92" y2="6" stroke="currentColor" stroke-width="0.6"/>
+      <circle cx="20" cy="25" r="0.8" fill="currentColor"/>
+    </symbol>
+    <!-- Detailed sailfish for splash -->
+    <symbol id="sailfish-art" viewBox="0 0 400 200">
+      <g stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round">
+        <path d="M10 110 Q90 80 160 100 Q180 80 220 92 L300 70 L380 30 L340 95 L380 130 L300 110 L220 115 Q180 128 160 116 Q90 130 10 115 Z"/>
+        <path d="M160 100 Q150 70 140 40 Q135 20 130 6 Q150 14 165 30 Q180 50 195 78 Q205 88 220 92"/>
+        <path d="M160 116 Q145 130 135 150 Q150 145 168 130"/>
+        <path d="M340 95 L380 30 M340 95 L380 130"/>
+        <path d="M260 84 L290 78 L280 96 Z"/>
+        <path d="M250 110 L280 116 L268 130 Z"/>
+        <line x1="40" y1="105" x2="200" y2="105" stroke-width="0.4" opacity="0.6"/>
+        <circle cx="40" cy="103" r="1.6" fill="currentColor"/>
+        <path d="M30 103 Q34 100 42 102" stroke-width="0.6"/>
+        <!-- gill -->
+        <path d="M70 92 Q72 110 70 122" stroke-width="0.6"/>
+        <!-- hatching dorsal sail -->
+        <line x1="135" y1="40" x2="155" y2="60" stroke-width="0.4"/>
+        <line x1="145" y1="32" x2="170" y2="58" stroke-width="0.4"/>
+        <line x1="155" y1="22" x2="180" y2="56" stroke-width="0.4"/>
+        <line x1="165" y1="18" x2="190" y2="60" stroke-width="0.4"/>
+        <!-- body hatching -->
+        <line x1="100" y1="92" x2="120" y2="92" stroke-width="0.3"/>
+        <line x1="120" y1="90" x2="160" y2="90" stroke-width="0.3"/>
+        <line x1="180" y1="98" x2="220" y2="98" stroke-width="0.3"/>
+        <line x1="220" y1="100" x2="280" y2="100" stroke-width="0.3"/>
+      </g>
+    </symbol>
+
+    <!-- Fish: Snapper -->
+    <symbol id="fish-snapper" viewBox="0 0 400 200">
+      <g class="fish-body" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round">
+        <path d="M20 100 Q60 60 130 70 Q200 50 280 78 L340 60 L320 100 L340 140 L280 122 Q200 150 130 130 Q60 140 20 100 Z"/>
+        <path d="M280 78 Q300 90 320 100 Q300 110 280 122"/>
+        <line x1="50" y1="100" x2="270" y2="100" stroke-width="0.6" opacity="0.7"/>
+        <circle cx="60" cy="92" r="3" fill="currentColor"/>
+        <path d="M48 88 Q56 85 70 90" stroke-width="0.8"/>
+        <path d="M84 78 Q88 110 84 122" stroke-width="0.8"/>
+        <!-- dorsal spines -->
+        <line x1="120" y1="70" x2="125" y2="50" stroke-width="0.8"/>
+        <line x1="140" y1="68" x2="148" y2="48" stroke-width="0.8"/>
+        <line x1="160" y1="66" x2="168" y2="46" stroke-width="0.8"/>
+        <line x1="180" y1="64" x2="188" y2="44" stroke-width="0.8"/>
+        <line x1="210" y1="62" x2="218" y2="46" stroke-width="0.8"/>
+        <line x1="240" y1="64" x2="248" y2="50" stroke-width="0.8"/>
+        <!-- ventral fin -->
+        <path d="M130 130 L120 150 L150 134" stroke-width="1"/>
+        <path d="M180 134 L175 158 L200 138" stroke-width="1"/>
+        <!-- tail rays -->
+        <line x1="320" y1="100" x2="340" y2="60" stroke-width="0.6"/>
+        <line x1="320" y1="100" x2="340" y2="140" stroke-width="0.6"/>
+        <line x1="320" y1="100" x2="338" y2="80" stroke-width="0.4"/>
+        <line x1="320" y1="100" x2="338" y2="120" stroke-width="0.4"/>
+        <!-- hatching -->
+        <line x1="100" y1="90" x2="220" y2="86" stroke-width="0.3" opacity="0.7"/>
+        <line x1="100" y1="110" x2="220" y2="114" stroke-width="0.3" opacity="0.7"/>
+        <line x1="120" y1="80" x2="200" y2="78" stroke-width="0.3" opacity="0.5"/>
+        <line x1="120" y1="120" x2="200" y2="122" stroke-width="0.3" opacity="0.5"/>
+      </g>
+    </symbol>
+
+    <!-- Fish: Sea Bass -->
+    <symbol id="fish-seabass" viewBox="0 0 400 200">
+      <g class="fish-body" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round">
+        <path d="M16 102 Q80 80 160 84 Q240 70 290 84 L340 60 L322 100 L340 138 L290 116 Q240 130 160 116 Q80 120 16 102 Z"/>
+        <line x1="40" y1="102" x2="285" y2="100" stroke-width="0.5" opacity="0.7"/>
+        <circle cx="56" cy="94" r="2.6" fill="currentColor"/>
+        <path d="M40 88 L50 84 L62 86" stroke-width="0.8"/>
+        <path d="M76 80 Q80 110 76 124" stroke-width="0.8"/>
+        <!-- 2 dorsals separated -->
+        <path d="M120 84 L130 60 L160 84" stroke-width="0.8"/>
+        <path d="M180 84 L195 70 L240 80" stroke-width="0.8"/>
+        <line x1="190" y1="80" x2="195" y2="70" stroke-width="0.4"/>
+        <line x1="210" y1="78" x2="218" y2="68" stroke-width="0.4"/>
+        <line x1="225" y1="78" x2="232" y2="70" stroke-width="0.4"/>
+        <!-- ventral -->
+        <path d="M150 116 L160 138 L185 118" stroke-width="0.8"/>
+        <!-- tail -->
+        <line x1="322" y1="100" x2="340" y2="60" stroke-width="0.6"/>
+        <line x1="322" y1="100" x2="340" y2="138" stroke-width="0.6"/>
+        <line x1="322" y1="100" x2="336" y2="80" stroke-width="0.4"/>
+        <line x1="322" y1="100" x2="336" y2="120" stroke-width="0.4"/>
+        <!-- hatching -->
+        <line x1="90" y1="92" x2="280" y2="90" stroke-width="0.3" opacity="0.6"/>
+        <line x1="90" y1="108" x2="280" y2="110" stroke-width="0.3" opacity="0.6"/>
+      </g>
+    </symbol>
+
+    <!-- Fish: Grouper -->
+    <symbol id="fish-grouper" viewBox="0 0 400 200">
+      <g class="fish-body" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round">
+        <path d="M20 100 Q70 50 160 60 Q230 50 290 80 L340 64 L320 100 L340 136 L290 120 Q230 150 160 140 Q70 150 20 100 Z"/>
+        <line x1="50" y1="100" x2="280" y2="100" stroke-width="0.5" opacity="0.6"/>
+        <circle cx="80" cy="86" r="3" fill="currentColor"/>
+        <path d="M62 80 Q72 76 88 82" stroke-width="0.8"/>
+        <path d="M52 100 Q90 110 110 100" stroke-width="0.8"/>
+        <path d="M104 80 Q108 116 104 130" stroke-width="0.8"/>
+        <!-- spiny dorsal across -->
+        <line x1="140" y1="64" x2="146" y2="44" stroke-width="0.8"/>
+        <line x1="160" y1="60" x2="166" y2="40" stroke-width="0.8"/>
+        <line x1="180" y1="58" x2="186" y2="40" stroke-width="0.8"/>
+        <line x1="200" y1="58" x2="206" y2="42" stroke-width="0.8"/>
+        <line x1="220" y1="60" x2="226" y2="44" stroke-width="0.8"/>
+        <line x1="240" y1="64" x2="246" y2="50" stroke-width="0.8"/>
+        <!-- ventral -->
+        <path d="M150 138 L160 158 L190 140" stroke-width="0.8"/>
+        <!-- tail -->
+        <line x1="320" y1="100" x2="340" y2="64" stroke-width="0.6"/>
+        <line x1="320" y1="100" x2="340" y2="136" stroke-width="0.6"/>
+        <!-- spots -->
+        <circle cx="120" cy="92" r="2" fill="currentColor"/>
+        <circle cx="160" cy="86" r="2" fill="currentColor"/>
+        <circle cx="200" cy="92" r="2" fill="currentColor"/>
+        <circle cx="240" cy="92" r="2" fill="currentColor"/>
+        <circle cx="140" cy="116" r="2" fill="currentColor"/>
+        <circle cx="180" cy="120" r="2" fill="currentColor"/>
+        <circle cx="220" cy="118" r="2" fill="currentColor"/>
+      </g>
+    </symbol>
+
+    <!-- Fish: Mullet -->
+    <symbol id="fish-mullet" viewBox="0 0 400 200">
+      <g class="fish-body" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round">
+        <path d="M20 102 Q60 84 130 88 Q200 80 280 90 L340 70 L320 102 L340 134 L280 114 Q200 124 130 116 Q60 120 20 102 Z"/>
+        <line x1="40" y1="100" x2="280" y2="100" stroke-width="0.5" opacity="0.7"/>
+        <circle cx="48" cy="100" r="2.4" fill="currentColor"/>
+        <path d="M30 100 L42 96 L56 98" stroke-width="0.8"/>
+        <path d="M76 88 Q80 110 76 116" stroke-width="0.8"/>
+        <!-- two small dorsals -->
+        <path d="M150 88 L160 70 L180 90" stroke-width="0.8"/>
+        <path d="M220 86 L230 72 L246 90" stroke-width="0.8"/>
+        <!-- ventral -->
+        <path d="M170 116 L178 132 L196 118" stroke-width="0.8"/>
+        <!-- tail forked -->
+        <line x1="320" y1="102" x2="340" y2="70" stroke-width="0.6"/>
+        <line x1="320" y1="102" x2="340" y2="134" stroke-width="0.6"/>
+        <line x1="320" y1="102" x2="334" y2="86" stroke-width="0.4"/>
+        <line x1="320" y1="102" x2="334" y2="118" stroke-width="0.4"/>
+        <!-- horizontal hatching for silver-side stripes -->
+        <line x1="80" y1="94" x2="280" y2="92" stroke-width="0.3"/>
+        <line x1="80" y1="98" x2="280" y2="96" stroke-width="0.3"/>
+        <line x1="80" y1="106" x2="280" y2="106" stroke-width="0.3"/>
+      </g>
+    </symbol>
+
+    <!-- Fish: Yellowfin Bream -->
+    <symbol id="fish-bream" viewBox="0 0 400 200">
+      <g class="fish-body" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round">
+        <path d="M28 102 Q70 40 170 50 Q240 38 290 76 L340 56 L322 102 L340 144 L290 124 Q240 162 170 152 Q70 160 28 102 Z"/>
+        <line x1="60" y1="102" x2="280" y2="102" stroke-width="0.5" opacity="0.6"/>
+        <circle cx="78" cy="86" r="2.6" fill="currentColor"/>
+        <path d="M62 80 Q72 76 86 82" stroke-width="0.8"/>
+        <path d="M100 76 Q104 124 100 132" stroke-width="0.8"/>
+        <!-- continuous dorsal with rays -->
+        <line x1="120" y1="58" x2="124" y2="40" stroke-width="0.8"/>
+        <line x1="140" y1="50" x2="144" y2="32" stroke-width="0.8"/>
+        <line x1="160" y1="46" x2="164" y2="28" stroke-width="0.8"/>
+        <line x1="180" y1="46" x2="184" y2="28" stroke-width="0.8"/>
+        <line x1="200" y1="48" x2="204" y2="30" stroke-width="0.8"/>
+        <line x1="220" y1="52" x2="224" y2="34" stroke-width="0.8"/>
+        <line x1="240" y1="58" x2="244" y2="42" stroke-width="0.8"/>
+        <!-- ventral -->
+        <path d="M150 150 L168 174 L195 154" stroke-width="0.8"/>
+        <!-- tail -->
+        <line x1="322" y1="102" x2="340" y2="56" stroke-width="0.6"/>
+        <line x1="322" y1="102" x2="340" y2="144" stroke-width="0.6"/>
+        <!-- gold stripe (use width var) -->
+        <path d="M100 120 Q200 130 280 122" stroke-width="0.6" stroke-dasharray="2 1" opacity="0.6"/>
+      </g>
+    </symbol>
+
+    <!-- Fish: Trevally -->
+    <symbol id="fish-trevally" viewBox="0 0 400 200">
+      <g class="fish-body" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round">
+        <!-- deep body, deeply forked tail -->
+        <path d="M16 102 Q60 50 150 56 Q230 50 280 78 L296 84 L320 64 L320 140 L296 120 L280 126 Q230 154 150 148 Q60 154 16 102 Z"/>
+        <line x1="40" y1="100" x2="290" y2="100" stroke-width="0.5" opacity="0.6"/>
+        <!-- scutes near tail -->
+        <line x1="270" y1="102" x2="296" y2="102" stroke-width="1.2"/>
+        <circle cx="60" cy="86" r="3" fill="currentColor"/>
+        <path d="M40 80 Q52 76 70 82" stroke-width="0.8"/>
+        <path d="M82 76 Q86 124 82 130" stroke-width="0.8"/>
+        <!-- dorsal -->
+        <line x1="120" y1="64" x2="124" y2="44" stroke-width="0.8"/>
+        <line x1="150" y1="56" x2="156" y2="36" stroke-width="0.8"/>
+        <line x1="180" y1="54" x2="186" y2="34" stroke-width="0.8"/>
+        <line x1="210" y1="58" x2="216" y2="40" stroke-width="0.8"/>
+        <line x1="240" y1="64" x2="246" y2="48" stroke-width="0.8"/>
+        <!-- ventral -->
+        <path d="M150 148 L160 168 L195 152" stroke-width="0.8"/>
+        <!-- tail rays for fork -->
+        <line x1="320" y1="64" x2="320" y2="84" stroke-width="0.6"/>
+        <line x1="320" y1="120" x2="320" y2="140" stroke-width="0.6"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<script>
+'use strict';
+
+/* ==========================================================================
+   01 — UTIL
+   ========================================================================== */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const fmtT = d => d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+const fmtD = d => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isCoarse = () => window.matchMedia('(pointer: coarse)').matches;
+
+const LOC = {
+  saikung: { name: 'Sai Kung', short: 'SAI KUNG', lat: 22.381389, lng: 114.270833, coord: '22.3811°N · 114.2683°E' },
+  stanley: { name: 'Stanley',  short: 'STANLEY',  lat: 22.218,    lng: 114.211,    coord: '22.2180°N · 114.2110°E' }
+};
+
+const STATE = {
+  loc: localStorage.getItem('troll.loc') || 'saikung',
+  view: 'dashboard',
+  weather: null, forecast: null, warnings: null, marine: null,
+  danger: null, tideSeries: null, tideState: null,
+  topFish: [], moon: null,
+  log: JSON.parse(localStorage.getItem('troll.log') || '[]'),
+  checklist: JSON.parse(localStorage.getItem('troll.check') || '{}'),
+  motor: { dir: 0, speed: 3, anchor: false, lock: false }
+};
+
+async function cachedFetch(key, url, ttlMs) {
+  const fullKey = 'troll.cache.' + key;
+  try {
+    const c = JSON.parse(sessionStorage.getItem(fullKey) || 'null');
+    if (c && Date.now() - c.t < ttlMs) return c.d;
+  } catch {}
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    sessionStorage.setItem(fullKey, JSON.stringify({ t: Date.now(), d }));
+    return d;
+  } catch (e) {
+    const c = JSON.parse(sessionStorage.getItem(fullKey) || 'null');
+    if (c) return c.d;
+    throw e;
+  }
+}
+
+function tween({ from, to, dur=800, easing=t => 1 - Math.pow(1-t, 4), update, done }) {
+  if (reduceMotion()) { update(to); done && done(); return; }
+  const start = performance.now();
+  function frame(now) {
+    const t = clamp((now - start) / dur, 0, 1);
+    const v = from + (to - from) * easing(t);
+    update(v);
+    if (t < 1) requestAnimationFrame(frame); else done && done();
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ==========================================================================
+   02 — CURSOR
+   ========================================================================== */
+const Cursor = (() => {
+  const dot = $('#cursor-dot'), ring = $('#cursor-ring');
+  const layer = $('#cursor-layer'), rippleLayer = $('#ripple-layer');
+  let x=0, y=0, tx=0, ty=0, lastTrail=0;
+
+  if (isCoarse() || reduceMotion()) {
+    document.addEventListener('pointerdown', e => emitRipple(e.clientX, e.clientY));
+    return { init() {} };
+  }
+
+  function emitTrail(px, py) {
+    const d = document.createElement('div');
+    d.className = 'trail-dot';
+    d.style.transform = `translate3d(${px}px, ${py}px, 0)`;
+    layer.appendChild(d);
+    setTimeout(() => d.remove(), 2500);
+  }
+  function emitRipple(px, py) {
+    if (reduceMotion()) return;
+    for (let i = 0; i < 3; i++) {
+      const r = document.createElement('div');
+      r.className = 'ripple';
+      r.style.left = px + 'px';
+      r.style.top = py + 'px';
+      r.style.animationDelay = (i * 80) + 'ms';
+      rippleLayer.appendChild(r);
+      setTimeout(() => r.remove(), 800 + i*80);
+    }
+  }
+  function tick(now) {
+    x += (tx - x) * 0.22;
+    y += (ty - y) * 0.22;
+    dot.style.transform = `translate3d(${tx}px, ${ty}px, 0) translate(-50%, -50%)`;
+    ring.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+    if (now - lastTrail > 60) {
+      emitTrail(x, y);
+      lastTrail = now;
+    }
+    requestAnimationFrame(tick);
+  }
+  return {
+    init() {
+      document.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+      document.addEventListener('pointerover', e => {
+        const isInter = e.target.closest('button, a, input, select, textarea, [role=button], [role=tab], .fish-card, .gear-item, .log-row, .fc-day, .wall-item, .motor-toggle, .stars-input button');
+        ring.classList.toggle('hover', !!isInter);
+      });
+      document.addEventListener('pointerdown', e => {
+        ring.classList.add('press');
+        emitRipple(e.clientX, e.clientY);
+      });
+      document.addEventListener('pointerup', () => ring.classList.remove('press'));
+      requestAnimationFrame(tick);
+    }
+  };
+})();
+
+/* ==========================================================================
+   03 — MOON (local astronomy)
+   ========================================================================== */
+function moonInfo(date=new Date()) {
+  const d = (date.getTime() / 86400000) - 10957.5;
+  const cycle = 29.53058867;
+  const knownNew = -1.5;
+  let phase = ((d - knownNew) % cycle) / cycle;
+  if (phase < 0) phase += 1;
+  const illum = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
+  let name;
+  if (phase < 0.03 || phase > 0.97) name = 'New Moon';
+  else if (phase < 0.22) name = 'Waxing Crescent';
+  else if (phase < 0.28) name = 'First Quarter';
+  else if (phase < 0.47) name = 'Waxing Gibbous';
+  else if (phase < 0.53) name = 'Full Moon';
+  else if (phase < 0.72) name = 'Waning Gibbous';
+  else if (phase < 0.78) name = 'Last Quarter';
+  else name = 'Waning Crescent';
+  const dist = Math.min(Math.abs(phase), Math.abs(phase - 0.5), Math.abs(phase - 1));
+  const stars = clamp(Math.round(5 - dist * 12), 1, 5);
+  const riseH = ((phase * 24) + 18) % 24;
+  const setH  = (riseH + 12) % 24;
+  const f = h => `${String(Math.floor(h)).padStart(2,'0')}:${String(Math.floor((h%1)*60)).padStart(2,'0')}`;
+  return { phase, illum, name, stars, rise: f(riseH), set: f(setH), riseH, setH };
+}
+function solunarTimes() {
+  const m = moonInfo();
+  const f = h => `${String(Math.floor(h)).padStart(2,'0')}:${String(Math.floor((h%1)*60)).padStart(2,'0')}`;
+  const major1 = m.riseH, major2 = m.setH;
+  const minor1 = (m.riseH + 6) % 24;
+  const minor2 = (m.setH + 6) % 24;
+  return {
+    major: `${f(major1)}–${f((major1+1.5)%24)} · ${f(major2)}–${f((major2+1.5)%24)}`,
+    minor: `${f(minor1)}–${f((minor1+1)%24)} · ${f(minor2)}–${f((minor2+1)%24)}`
+  };
+}
+/* Approximate sunset for HK at given date */
+function sunsetHourHK(date=new Date()) {
+  const day = (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(),0,0)) / 86400000;
+  // sunset HK varies ~17:40 winter solstice → ~19:10 summer solstice
+  return 18.4 + 0.75 * Math.sin((day - 80) / 365.25 * 2 * Math.PI);
+}
+
+/* ==========================================================================
+   04 — TIDE (synthetic)
+   ========================================================================== */
+function syntheticTide(date, lat) {
+  const out = [];
+  const start = new Date(date); start.setHours(0,0,0,0);
+  for (let i = 0; i <= 96; i++) {
+    const t = new Date(start.getTime() + i * 30 * 60 * 1000);
+    const h = t.getTime() / 3600000;
+    const m2 = Math.sin((h / 12.42) * 2 * Math.PI + lat) * 0.9;
+    const s2 = Math.sin((h / 12.0) * 2 * Math.PI) * 0.3;
+    const k1 = Math.sin((h / 23.93) * 2 * Math.PI) * 0.25;
+    out.push({ t, height: 1.4 + m2 + s2 + k1 });
+  }
+  return out;
+}
+function findExtrema(s) {
+  const ext = [];
+  for (let i = 1; i < s.length - 1; i++) {
+    if (s[i].height > s[i-1].height && s[i].height > s[i+1].height) ext.push({ ...s[i], type: 'high' });
+    if (s[i].height < s[i-1].height && s[i].height < s[i+1].height) ext.push({ ...s[i], type: 'low' });
+  }
+  return ext;
+}
+function tideStateNow(s) {
+  const now = Date.now();
+  let i = 0;
+  while (i < s.length - 1 && s[i].t.getTime() < now) i++;
+  if (i === 0) return { state: 'incoming', height: s[0].height };
+  return { state: s[i].height > s[i-1].height ? 'incoming' : 'outgoing', height: lerp(s[i-1].height, s[i].height, 0.5) };
+}
+
+/* ==========================================================================
+   05 — DANGER / SAFETY INDEX
+   ========================================================================== */
+function computeDanger({ windKmh, waveM, rainMm, uv, warnings }) {
+  const fWind = clamp((windKmh - 5) * 2.0, 0, 100);
+  const fWave = clamp((waveM - 0.4) * 60, 0, 100);
+  const fRain = clamp(rainMm * 8, 0, 100);
+  const fUV   = clamp((uv - 5) * 14, 0, 100);
+  const fWarn = (warnings?.length || 0) > 0 ? 80 : 0;
+  const total = Math.round(fWind * 0.30 + fWave * 0.30 + fRain * 0.20 + fUV * 0.10 + fWarn * 0.10);
+  return { total, factors: { wind: fWind, wave: fWave, rain: fRain, uv: fUV, warn: fWarn } };
+}
+function dangerLabel(s) {
+  if (s <= 30) return { label: 'BANGER', tip: "Today's a banger. Get out there.", color: 'var(--radio)' };
+  if (s <= 60) return { label: 'PROCEED', tip: "Workable. Tighten everything down.", color: 'var(--warn)' };
+  return { label: 'STAND DOWN', tip: 'Bad scene. Stay home, log next time.', color: 'var(--danger)' };
+}
+
+/* ==========================================================================
+   06 — FISH DB
+   ========================================================================== */
+const FISH = [
+  { id: 'snapper',  en: 'Mangrove Snapper',  zh: '紅鰽',  latin: 'Lutjanus argentimaculatus', symbol: 'fish-snapper',
+    size: '25–40CM', tempMin: 18, tempMax: 30, months: [3,4,5,6,7,8,9],
+    bait: 'Live shrimp, small crabs', tactic: 'Bottom rig near rocks. Twitch the line. They bite hard, then they don\'t.' },
+  { id: 'seabass',  en: 'Sea Bass',  zh: '海鱸',  latin: 'Lateolabrax japonicus', symbol: 'fish-seabass',
+    size: '30–60CM', tempMin: 16, tempMax: 26, months: [1,2,3,9,10,11,12],
+    bait: 'Topwater popper, minnow plug', tactic: 'Cast tight to the seawall. Retrieve fast at first, then dead-stick.' },
+  { id: 'grouper',  en: 'Grouper',  zh: '石斑',  latin: 'Epinephelus spp.', symbol: 'fish-grouper',
+    size: '30–55CM', tempMin: 18, tempMax: 28, months: [3,4,5,9,10,11],
+    bait: 'Live fingerling, soft swimbait', tactic: 'Drop straight down on structure. Set the hook hard or lose it to rocks.' },
+  { id: 'mullet',   en: 'Striped Mullet',  zh: '烏頭',  latin: 'Mugil cephalus', symbol: 'fish-mullet',
+    size: '20–35CM', tempMin: 12, tempMax: 24, months: [10,11,12,1,2,3],
+    bait: 'Bread dough, sabiki rig', tactic: 'Float rig, surface. They\'re the most paranoid fish in HK. Light leader.' },
+  { id: 'bream',    en: 'Yellowfin Bream',  zh: '黃腳鱲',  latin: 'Acanthopagrus latus', symbol: 'fish-bream',
+    size: '18–32CM', tempMin: 14, tempMax: 24, months: [10,11,12,1,2,3,4],
+    bait: 'Sandworm, peeled prawn', tactic: 'Light bottom rig. Sensitive tip. Wait for the second tap, then strike.' },
+  { id: 'trevally', en: 'Big-eye Trevally',  zh: '池魚王',  latin: 'Caranx sexfasciatus', symbol: 'fish-trevally',
+    size: '30–50CM', tempMin: 24, tempMax: 32, months: [5,6,7,8,9],
+    bait: 'Metal slug, soft plastic', tactic: 'Dawn or dusk. Long cast off points. Burn the retrieve.' }
+];
+
+function recommendFish(temp, monthIdx, tideState) {
+  const month = monthIdx + 1;
+  return FISH.map(f => {
+    let s = 0;
+    if (temp >= f.tempMin && temp <= f.tempMax) s += 50;
+    else s += Math.max(0, 50 - Math.abs(temp - (f.tempMin+f.tempMax)/2) * 4);
+    s += f.months.includes(month) ? 35 : 5;
+    s += (tideState === 'incoming') ? 15 : 5;
+    // personalisation: bump species the user has caught before
+    const userTop = topUserSpecies();
+    if (userTop && f.en.toLowerCase().includes(userTop.toLowerCase())) s += 10;
+    return { ...f, score: clamp(Math.round(s), 0, 100) };
+  }).sort((a, b) => b.score - a.score).slice(0, 4);
+}
+
+function topUserSpecies() {
+  if (!STATE.log.length) return null;
+  const c = {};
+  STATE.log.forEach(e => { c[e.species] = (c[e.species] || 0) + 1; });
+  return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0];
+}
+
+/* ==========================================================================
+   07 — GEAR + BAIT
+   ========================================================================== */
+function gearList({ temp, rainMm, uv, windKmh, isNight, moonKey }) {
+  const base = [
+    { id:'rod',    label:'Rod (7–9ft medium)',          cond: false },
+    { id:'reel',   label:'Spinning reel 3000–4000',     cond: false },
+    { id:'line',   label:'12–20lb mono / braid',        cond: false },
+    { id:'tackle', label:'Terminal tackle box',          cond: false },
+    { id:'tools',  label:'Scissors, pliers',             cond: false },
+    { id:'bucket', label:'Bucket / cooler',              cond: false }
+  ];
+  const cond = [];
+  if (rainMm > 5)    cond.push({ id:'rain',  label:'Rain shell',           tag: 'WET' });
+  if (temp < 18)     cond.push({ id:'warm',  label:'Layers + gloves',      tag: 'COLD' });
+  if (temp > 28)     cond.push({ id:'hot',   label:'Hat, towel, salts',    tag: 'HOT' });
+  if (uv > 7)        cond.push({ id:'uv',    label:'SPF50, polarised',     tag: 'UV' });
+  if (windKmh > 25)  cond.push({ id:'wind',  label:'Windbreaker, holder',  tag: 'WIND' });
+  if (isNight)       cond.push({ id:'night', label:'Headlamp, glow stick', tag: 'NIGHT' });
+  if (moonKey === 'new' || moonKey === 'full') cond.push({ id:'moonbait', label:'Extra bait — fish are on', tag: 'MOON' });
+  return [...base, ...cond.map(c => ({ ...c, cond: true }))];
+}
+
+function baitPicks({ desc, topFish }) {
+  const picks = [];
+  const d = (desc || '').toLowerCase();
+  if (d.includes('sun') || d.includes('clear') || d.includes('fine')) {
+    picks.push({ tag: 'BRIGHT SUN', name: 'Natural colours', body: 'Silver, white, blue. Match the clear water. Fish are wary today.' });
+  } else if (d.includes('cloud') || d.includes('overcast') || d.includes('rain')) {
+    picks.push({ tag: 'CLOUDY', name: 'Hi-vis colours', body: 'Chartreuse, pink, orange. Low light needs contrast.' });
+  } else {
+    picks.push({ tag: 'NEUTRAL', name: 'Match the hatch', body: 'Whatever the local baitfish look like, throw that.' });
+  }
+  if (d.includes('rain')) picks.push({ tag: 'MURKY', name: 'Vibration + scent', body: 'Rattle baits, scented soft plastics. Fish hunt by sense, not sight.' });
+  else picks.push({ tag: 'CLEAR', name: 'Subtle presentation', body: 'Light leader, slow retrieve, smaller hooks.' });
+  if (topFish?.[0]) picks.push({ tag: 'FOR ' + topFish[0].en.toUpperCase(), name: topFish[0].bait, body: topFish[0].tactic });
+  return picks;
+}
+
+/* ==========================================================================
+   08 — WEATHER (HKO + open-meteo)
+   ========================================================================== */
+const HKO = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=';
+const TTL = { weather: 15*60*1000, forecast: 30*60*1000, marine: 60*60*1000 };
+
+function pickStationVal(arr, place, fallbackPlace='Hong Kong Observatory') {
+  if (!Array.isArray(arr)) return null;
+  return (arr.find(d => d.place === place)?.value ?? arr.find(d => d.place === fallbackPlace)?.value ?? arr[0]?.value);
+}
+function pickRain(arr, place, fallback='Southern') {
+  if (!Array.isArray(arr)) return 0;
+  return (arr.find(d => d.place === place) || arr.find(d => d.place === fallback) || arr[0])?.max ?? 0;
+}
+function iconToDesc(code) {
+  const m = { 50:'Clear', 51:'Sunny periods', 52:'Sunny intervals', 53:'Sun & showers', 54:'Sun & showers',
+    60:'Cloudy', 61:'Overcast', 62:'Light rain', 63:'Rain', 64:'Heavy rain', 65:'Thunderstorms',
+    70:'Fine', 76:'Mainly cloudy', 77:'Mainly fine', 80:'Windy', 81:'Dry', 82:'Humid',
+    83:'Fog', 84:'Mist', 85:'Haze', 90:'Hot', 91:'Warm', 92:'Cool', 93:'Cold' };
+  return m[code] || 'Hong Kong';
+}
+const dirCard = deg => ['N','NE','E','SE','S','SW','W','NW'][Math.round((deg%360)/45)%8];
+
+/* ==========================================================================
+   09 — DASHBOARD RENDER
+   ========================================================================== */
+function renderTopMeta() {
+  const now = new Date();
+  $('#hero-clock').textContent = fmtT(now) + ' HKT';
+  $('#hero-date').textContent = fmtD(now).toUpperCase();
+  $('#hero-loc-name').textContent = LOC[STATE.loc].short;
+  $('#hero-coords').textContent = LOC[STATE.loc].coord;
+  $('#footer-stamp').textContent = LOC[STATE.loc].coord;
+  $('#meter-loc-coord').textContent = LOC[STATE.loc].coord;
+  $('#cond-loc').textContent = LOC[STATE.loc].short;
+  $('#meter-update').textContent = 'UPDATED ' + fmtT(now);
+}
+
+function renderHeroHeadline(danger, tideState, desc) {
+  const lab = dangerLabel(danger.total).label;
+  const lines = {
+    BANGER: [
+      `Today's a <em>banger</em>.`,
+      `Tide's <em>up</em>. Get out.`,
+      `Fish are <em>on</em>. So are you.`
+    ],
+    PROCEED: [
+      `Workable. Tighten <em>everything</em>.`,
+      `Mid-day grind. <em>Stay sharp</em>.`,
+      `Decent window. <em>Don't waste</em> it.`
+    ],
+    'STAND DOWN': [
+      `Bad scene. <em>Don't go</em>.`,
+      `Don't troll the <em>typhoon</em>.`,
+      `Stay home. <em>Tie knots</em>.`
+    ]
+  };
+  const idx = (new Date()).getDate() % 3;
+  $('#hero-headline').innerHTML = lines[lab][idx];
+  const sunset = sunsetHourHK();
+  const sunsetStr = `${String(Math.floor(sunset)).padStart(2,'0')}:${String(Math.floor((sunset%1)*60)).padStart(2,'0')}`;
+  $('#hero-sub').textContent = `${LOC[STATE.loc].short} · TIDE ${tideState.toUpperCase()} · SUNSET ${sunsetStr}`;
+}
+
+function renderConditions(d) {
+  const animTo = v => Math.round(v ?? 0);
+  tween({ from: 0, to: animTo(d.temp), update: v => { $('#cond-temp').textContent = Math.round(v); }, dur: 900 });
+  $('#cond-desc').textContent = d.desc || '—';
+  $('#cond-feels').textContent = d.temp != null ? `FEELS LIKE ${Math.round(d.temp + (d.humid > 75 ? 2 : 0))}°` : '';
+  $('#cond-wind').textContent = Math.round(d.windKmh);
+  $('#cond-wind-sub').textContent = `${d.windDir} · ${Math.round(d.windKmh)} KM/H`;
+  $('#cond-humid').textContent = Math.round(d.humid);
+  $('#cond-uv').textContent = d.uv != null ? d.uv.toFixed(1) : '—';
+  $('#cond-uv-sub').textContent = uvLevel(d.uv);
+  $('#cond-rain').textContent = (d.rainMm || 0).toFixed(1);
+  $('#wind-arrow').style.transform = `rotate(${(d.windDeg||0) + 180}deg)`;
+}
+function uvLevel(uv) {
+  if (uv == null) return '—';
+  if (uv < 3) return 'LOW';
+  if (uv < 6) return 'MODERATE';
+  if (uv < 8) return 'HIGH';
+  if (uv < 11) return 'VERY HIGH';
+  return 'EXTREME';
+}
+
+function renderDanger(d) {
+  const C = 100;
+  const fg = $('#meter-fg');
+  fg.style.transition = 'stroke-dashoffset 1.4s var(--ease-quart), stroke 600ms';
+  fg.setAttribute('stroke-dashoffset', C - d.total);
+  const lab = dangerLabel(d.total);
+  fg.style.stroke = lab.color;
+  // animate number
+  tween({ from: 0, to: d.total, dur: 1200, update: v => $('#meter-num').innerHTML = `${Math.round(v)}<small>/100</small>` });
+  $('#meter-status').textContent = lab.label;
+  $('#meter-status').style.color = lab.color;
+  $('#meter-tip').textContent = lab.tip;
+  fg.classList.toggle('meter-pulse', d.total > 60);
+
+  for (const k of Object.keys(d.factors)) {
+    const bar = document.querySelector(`.meter-break-bar[data-id="${k}"]`);
+    const val = document.querySelector(`.meter-break-val[data-val="${k}"]`);
+    const v = d.factors[k];
+    if (bar) {
+      bar.style.setProperty('--w', v + '%');
+      bar.classList.toggle('danger', v > 60);
+    }
+    if (val) val.textContent = Math.round(v);
+  }
+  // ticks
+  const ticks = document.querySelector('.meter-ticks');
+  if (ticks && !ticks.children.length) {
+    for (let i = 0; i < 60; i++) {
+      const a = (i / 60) * 360 - 90;
+      const r1 = 110, r2 = i % 5 === 0 ? 117 : 113;
+      const x1 = 120 + Math.cos(a*Math.PI/180) * r1;
+      const y1 = 120 + Math.sin(a*Math.PI/180) * r1;
+      const x2 = 120 + Math.cos(a*Math.PI/180) * r2;
+      const y2 = 120 + Math.sin(a*Math.PI/180) * r2;
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', x1); ln.setAttribute('y1', y1);
+      ln.setAttribute('x2', x2); ln.setAttribute('y2', y2);
+      if (i % 5 === 0) ln.classList.add('major');
+      ticks.appendChild(ln);
+    }
+  }
+}
+
+function renderTide(series) {
+  const c = $('#tide-chart');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = c.clientWidth, h = c.clientHeight;
+  c.width = w * dpr; c.height = h * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const now = Date.now();
+  const start = now - 3*3600*1000, end = now + 21*3600*1000;
+  const win = series.filter(p => p.t.getTime() >= start && p.t.getTime() <= end);
+  if (win.length < 2) return;
+  const minH = Math.min(...win.map(p => p.height));
+  const maxH = Math.max(...win.map(p => p.height));
+  const pX = 24, pY = 28;
+  const xOf = t => pX + ((t - start) / (end - start)) * (w - pX*2);
+  const yOf = hv => h - pY - ((hv - minH) / (maxH - minH || 1)) * (h - pY*2);
+
+  const ext = findExtrema(win);
+  // best windows ±2h around highs
+  ctx.fillStyle = 'rgba(197,255,61,0.06)';
+  for (const p of ext.filter(e => e.type==='high')) {
+    const tx = p.t.getTime();
+    ctx.fillRect(xOf(tx - 2*3600*1000), pY, xOf(tx + 2*3600*1000) - xOf(tx - 2*3600*1000), h - pY*2);
+  }
+  // grid
+  ctx.strokeStyle = 'rgba(245,241,232,0.05)'; ctx.lineWidth = 0.5;
+  for (let i = 0; i < 5; i++) {
+    const y = pY + (h - pY*2) * i/4;
+    ctx.beginPath(); ctx.moveTo(pX, y); ctx.lineTo(w-pX, y); ctx.stroke();
+  }
+  // hour ticks
+  ctx.fillStyle = 'rgba(245,241,232,0.4)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  for (let hH = 0; hH <= 24; hH += 4) {
+    const tx = start + hH * 3600 * 1000;
+    const x = xOf(tx);
+    ctx.fillText(String(new Date(tx).getHours()).padStart(2,'0'), x, h - 8);
+  }
+  // line
+  ctx.strokeStyle = '#f5f1e8'; ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  win.forEach((p, i) => { const x = xOf(p.t.getTime()), y = yOf(p.height); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+  ctx.stroke();
+  // extrema
+  for (const e of ext) {
+    const x = xOf(e.t.getTime()), y = yOf(e.height);
+    ctx.fillStyle = e.type === 'high' ? '#c5ff3d' : '#a8a29e';
+    ctx.beginPath(); ctx.arc(x, y, 3.5, 0, 2*Math.PI); ctx.fill();
+    if (e.type === 'high') { ctx.shadowColor = 'rgba(197,255,61,0.6)'; ctx.shadowBlur = 6; ctx.fill(); ctx.shadowBlur = 0; }
+    ctx.fillStyle = 'rgba(245,241,232,0.85)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText(`${fmtT(e.t)} · ${e.height.toFixed(1)}m`, x, y - 10);
+  }
+  // now marker
+  const xN = xOf(now);
+  ctx.strokeStyle = '#c5ff3d'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(xN, pY); ctx.lineTo(xN, h-pY); ctx.stroke();
+  ctx.setLineDash([]);
+  const yN = yOf(win.find(p => p.t.getTime() >= now)?.height ?? win[0].height);
+  ctx.fillStyle = '#c5ff3d'; ctx.shadowColor = 'rgba(197,255,61,0.8)'; ctx.shadowBlur = 8;
+  ctx.beginPath(); ctx.arc(xN, yN, 4, 0, 2*Math.PI); ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // table
+  const next = ext.filter(e => e.t.getTime() > now).slice(0, 4);
+  $('#tide-extrema').innerHTML = next.map(e => `
+    <div class="tide-pt">
+      <div class="type ${e.type}">${e.type === 'high' ? '▲ HIGH' : '▼ LOW'}</div>
+      <div class="time">${fmtT(e.t)}</div>
+      <div class="h">${e.height.toFixed(2)}M · ${fmtD(e.t).toUpperCase()}</div>
+    </div>
+  `).join('');
+
+  const ts = tideStateNow(series);
+  $('#tide-state').textContent = `${ts.state.toUpperCase()} · ${ts.height.toFixed(2)}M`;
+  return ts;
+}
+
+function renderMoon() {
+  const m = moonInfo();
+  $('#moon-name').textContent = m.name;
+  $('#moon-illum').textContent = `${Math.round(m.illum * 100)}% ILLUMINATED`;
+  $('#moon-rise').textContent = `RISE ${m.rise} · SET ${m.set}`;
+  $('#moon-stars').textContent = `${m.stars} / 5`;
+  const sh = $('#moon-shadow');
+  if (m.phase < 0.5) { sh.style.left = '0'; sh.style.right = `${50 + (0.5 - m.phase) * 100}%`; }
+  else { sh.style.right = '0'; sh.style.left = `${50 + (m.phase - 0.5) * 100}%`; }
+  const so = solunarTimes();
+  $('#solunar-major').textContent = so.major;
+  $('#solunar-minor').textContent = so.minor;
+  return m;
+}
+
+function renderHeat(dangerByDay) {
+  const wrap = $('#heat'); wrap.innerHTML = '';
+  const labels = document.createElement('div'); labels.className = 'heat-labels';
+  const grid = document.createElement('div'); grid.className = 'heat-grid';
+  const days = 7;
+  for (let d = 0; d < days; d++) {
+    const day = new Date(); day.setDate(day.getDate() + d);
+    const lbl = document.createElement('div');
+    lbl.textContent = day.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
+    labels.appendChild(lbl);
+    const row = document.createElement('div'); row.className = 'heat-row';
+    const baseDanger = dangerByDay[d] ?? 40;
+    for (let h = 0; h < 24; h++) {
+      const cell = document.createElement('div'); cell.className = 'heat-cell';
+      const dawn = Math.exp(-Math.pow((h - 6) / 1.8, 2));
+      const dusk = Math.exp(-Math.pow((h - 18) / 1.8, 2));
+      const goodness = clamp(60 + (dawn + dusk) * 50 - baseDanger, 0, 100);
+      cell.style.background = `rgba(197,255,61,${goodness/100 * 0.85 + 0.02})`;
+      if (goodness > 75) cell.classList.add('peak');
+      cell.title = `${day.toLocaleDateString('en-GB', { weekday:'short' })} ${String(h).padStart(2,'0')}:00 · ${Math.round(goodness)}`;
+      row.appendChild(cell);
+    }
+    grid.appendChild(row);
+  }
+  wrap.appendChild(labels); wrap.appendChild(grid);
+}
+
+function renderForecast(forecast, dangerByDay) {
+  const grid = $('#fc-grid');
+  const days = forecast?.weatherForecast || [];
+  if (!days.length) { grid.innerHTML = ''; for (let i = 0; i < 7; i++) grid.insertAdjacentHTML('beforeend', '<div class="fc-day skel" style="height:160px"></div>'); return; }
+  grid.innerHTML = days.slice(0, 7).map((d, i) => {
+    const date = new Date(`${d.forecastDate.slice(0,4)}-${d.forecastDate.slice(4,6)}-${d.forecastDate.slice(6,8)}`);
+    const lo = d.forecastMintemp.value, hi = d.forecastMaxtemp.value;
+    const score = dangerByDay[i] ?? 50;
+    const grade = score <= 30 ? 'A' : score <= 50 ? 'B' : score <= 70 ? 'C' : 'D';
+    const desc = d.forecastWeather.replace(/\.$/, '');
+    return `
+      <div class="fc-day" tabindex="0">
+        <div class="grade ${grade}">${grade}</div>
+        <div class="d">${date.toLocaleDateString('en-GB', { weekday: 'short' })}</div>
+        <div class="ic">${desc}</div>
+        <div class="hi">${hi}°</div>
+        <div class="lo">/ ${lo}°</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderFish(temp, tideState) {
+  const month = new Date().getMonth();
+  const top = recommendFish(temp ?? 24, month, tideState);
+  $('#fish-context').textContent = `${Math.round(temp ?? 24)}°C · ${'JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC'.split(' ')[month]} · TIDE ${tideState.toUpperCase()}`;
+  $('#fish-grid').innerHTML = top.map((f, i) => `
+    <div class="fish-card" data-fish="${f.id}" tabindex="0">
+      <div style="display:flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+        <span class="num">${String(i+1).padStart(2,'0')}.</span>
+        <span class="t-mono-s">${f.size}</span>
+      </div>
+      <svg class="fish-illustration" viewBox="0 0 400 200" stroke-width="1.5"><use href="#${f.symbol}"/></svg>
+      <div>
+        <div class="fish-name">${f.en}</div>
+        <div class="fish-latin">${f.latin}</div>
+        <div class="fish-zh">${f.zh}</div>
+      </div>
+      <div class="fish-data">
+        <div><div class="k">Bait</div><div class="v">${f.bait.split(',')[0]}</div></div>
+        <div><div class="k">Tide</div><div class="v">${tideState === 'incoming' ? 'INCOMING' : 'OUTGOING'}</div></div>
+        <div><div class="k">Score</div><div class="v" style="color:var(--radio)">${f.score}</div></div>
+      </div>
+      <p class="fish-tactic">"${f.tactic}"</p>
+      <div class="fish-likeli"><span>Likelihood</span><span class="bar" style="--w:${f.score}%"></span><span>${f.score}%</span></div>
+    </div>
+  `).join('');
+  // attach swim animation on hover/tap
+  $$('.fish-card').forEach(card => {
+    card.addEventListener('pointerenter', () => { card.classList.remove('swim'); void card.offsetWidth; card.classList.add('swim'); });
+  });
+  STATE.topFish = top;
+  return top;
+}
+
+function renderGear(gear) {
+  $('#gear-list').innerHTML = gear.map(g => `
+    <button class="gear-item ${g.cond ? 'cond' : ''} ${STATE.checklist[g.id] ? 'checked' : ''}" data-id="${g.id}" type="button">
+      <span class="gear-box"></span>
+      <span class="gear-label">${g.label}</span>
+      ${g.tag ? `<span class="gear-tag">${g.tag}</span>` : ''}
+    </button>
+  `).join('');
+  $$('.gear-item').forEach(el => el.addEventListener('click', () => {
+    const id = el.dataset.id;
+    STATE.checklist[id] = !STATE.checklist[id];
+    el.classList.toggle('checked');
+    localStorage.setItem('troll.check', JSON.stringify(STATE.checklist));
+  }));
+}
+
+function renderBait(picks) {
+  $('#bait-list').innerHTML = picks.map(p => `
+    <div class="bait-item">
+      <span class="tag">${p.tag}</span>
+      <h4>${p.name}</h4>
+      <p>${p.body}</p>
+    </div>
+  `).join('');
+}
+
+/* ==========================================================================
+   10 — LOG
+   ========================================================================== */
+function renderLog() {
+  const filter = $('#log-filter')?.value || 'all';
+  const all = STATE.log.slice().sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  const filtered = filter === 'all' ? all : all.filter(e => e.location?.key === filter);
+
+  $('#ls-total').textContent = filtered.length;
+  $('#log-count-stamp').textContent = `${filtered.length} ENTR${filtered.length === 1 ? 'Y' : 'IES'}`;
+  if (filtered.length) {
+    const c = {}; filtered.forEach(e => { c[e.species] = (c[e.species] || 0) + 1; });
+    const top = Object.entries(c).sort((a, b) => b[1] - a[1])[0];
+    $('#ls-species').textContent = top ? top[0] : '—';
+    $('#ls-species-sub').textContent = top ? `× ${top[1]} CAUGHT` : '—';
+    const big = filtered.reduce((m, e) => parseFloat(e.size||0) > parseFloat(m.size||0) ? e : m, filtered[0]);
+    $('#ls-big').textContent = big?.size ? `${big.size}` : '—';
+    $('#ls-big-sub').textContent = big?.species ? big.species.toUpperCase() : '';
+  } else {
+    $('#ls-species').textContent = '—'; $('#ls-species-sub').textContent = '—';
+    $('#ls-big').textContent = '—'; $('#ls-big-sub').textContent = '';
+  }
+
+  const wrap = $('#log-list-wrap');
+  if (!filtered.length) {
+    wrap.innerHTML = `<div class="log-empty">Stop trolling and go log it.</div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="log-list">${filtered.map(e => `
+    <div class="log-row" data-id="${e.id}">
+      <div class="swipe-actions">
+        <button data-act="share" data-id="${e.id}" aria-label="Share">share</button>
+        <button data-act="delete" data-id="${e.id}" aria-label="Delete">delete</button>
+      </div>
+      <div class="content">
+        <svg class="icon-fish" viewBox="0 0 400 200"><use href="#${guessFishSymbol(e.species)}"/></svg>
+        <div>
+          <h5>${e.species}</h5>
+          <div class="meta">
+            <span>${new Date(e.timestamp).toLocaleString('en-GB')}</span>
+            <span>${e.location?.name || '—'}${e.location?.spot ? ' · ' + e.location.spot : ''}</span>
+            ${e.bait ? `<span>${e.bait}</span>` : ''}
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+          <div class="size">${e.size ? e.size + 'CM' : ''}</div>
+          <div class="t-mono-s" style="color: var(--radio);">${'★'.repeat(e.rating || 0)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+
+  // wire delete + share
+  $$('#log-list-wrap [data-act="delete"]').forEach(b => b.addEventListener('click', () => {
+    if (!confirm('Delete this catch?')) return;
+    STATE.log = STATE.log.filter(x => x.id !== b.dataset.id);
+    localStorage.setItem('troll.log', JSON.stringify(STATE.log));
+    renderLog();
+  }));
+  $$('#log-list-wrap [data-act="share"]').forEach(b => b.addEventListener('click', () => {
+    const e = STATE.log.find(x => x.id === b.dataset.id);
+    Share.exportEntry(e);
+  }));
+
+  // swipe to reveal
+  attachSwipe();
+}
+
+function guessFishSymbol(name) {
+  const n = name.toLowerCase();
+  if (n.includes('snap')) return 'fish-snapper';
+  if (n.includes('bass')) return 'fish-seabass';
+  if (n.includes('grouper') || n.includes('rock')) return 'fish-grouper';
+  if (n.includes('mullet')) return 'fish-mullet';
+  if (n.includes('bream') || n.includes('porgy')) return 'fish-bream';
+  if (n.includes('trevall') || n.includes('jack')) return 'fish-trevally';
+  return 'fish-snapper';
+}
+
+function attachSwipe() {
+  $$('.log-row').forEach(row => {
+    const content = row.querySelector('.content');
+    let sx = 0, dx = 0, dragging = false, opened = false;
+    row.addEventListener('pointerdown', e => {
+      if (e.target.closest('.swipe-actions')) return;
+      dragging = true; sx = e.clientX; row.setPointerCapture(e.pointerId);
+    });
+    row.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      dx = clamp(e.clientX - sx + (opened ? -160 : 0), -160, 0);
+      content.style.transition = 'none';
+      content.style.transform = `translateX(${dx}px)`;
+    });
+    row.addEventListener('pointerup', () => {
+      if (!dragging) return;
+      dragging = false;
+      content.style.transition = '';
+      if (dx < -60) { content.style.transform = 'translateX(-160px)'; opened = true; }
+      else { content.style.transform = ''; opened = false; }
+    });
+    row.addEventListener('pointercancel', () => { dragging = false; content.style.transform = ''; opened = false; });
+  });
+}
+
+/* ==========================================================================
+   11 — SONAR + MOTOR
+   ========================================================================== */
+const Sonar = (() => {
+  const svg = $('#sonar-svg');
+  const sweep = $('#sonar-sweep');
+  const blipsG = $('#sonar-blips');
+  let angle = 0;
+  let blips = [];
+  let last = 0;
+
+  function tick(now) {
+    if (!last) last = now;
+    const dt = now - last; last = now;
+    if (STATE.view !== 'deck') { requestAnimationFrame(tick); return; }
+    angle = (angle + dt * 0.12) % 360;
+    sweep.setAttribute('transform', `rotate(${angle} 200 200)`);
+    // spawn new blip occasionally
+    if (Math.random() < 0.012) {
+      const r = 50 + Math.random() * 140;
+      const a = Math.random() * 360;
+      const x = 200 + Math.cos(a*Math.PI/180) * r;
+      const y = 200 + Math.sin(a*Math.PI/180) * r;
+      blips.push({ x, y, born: now, life: 1500 });
+    }
+    blips = blips.filter(b => now - b.born < b.life);
+    blipsG.innerHTML = blips.map(b => {
+      const t = (now - b.born) / b.life;
+      const op = (1 - t) * 0.9;
+      return `<circle cx="${b.x}" cy="${b.y}" r="${3 + t*4}" fill="var(--radio)" opacity="${op}" filter="drop-shadow(0 0 4px var(--radio))"/>`;
+    }).join('');
+    $('#son-contacts').textContent = String(blips.length);
+    requestAnimationFrame(tick);
+  }
+  return {
+    init() {
+      $('#son-depth').textContent = (8 + Math.random() * 18).toFixed(1) + 'M';
+      setInterval(() => {
+        const t = STATE.weather && new Date().getHours() > 12 ? 23 + Math.random()*3 : 21 + Math.random()*3;
+        $('#son-temp').textContent = t.toFixed(1) + '°C';
+      }, 2000);
+      $('#son-temp').textContent = (22 + Math.random()*4).toFixed(1) + '°C';
+      $('#pair-sonar-btn').addEventListener('click', () => Modal.open({
+        title: 'Sonar — coming soon',
+        body: 'We\'re building this with Garmin Striker compatibility. Drop your email and we\'ll ping you when it ships.',
+        input: true, confirm: 'Notify me'
+      }));
+      $('#connect-motor-btn').addEventListener('click', () => Modal.open({
+        title: 'Trolling motor — early access',
+        body: 'Pair-and-play with major trolling motor brands is in development. Want to test? Drop your email.',
+        input: true, confirm: 'Get early access'
+      }));
+      requestAnimationFrame(tick);
+    }
+  };
+})();
+
+const Motor = (() => {
+  const wheel = $('#thumbwheel');
+  const needle = $('#thumb-needle');
+  let angle = 0;
+
+  function setAngle(a) {
+    angle = ((a % 360) + 360) % 360;
+    needle.setAttribute('transform', `rotate(${angle} 100 100)`);
+    STATE.motor.dir = angle;
+  }
+  function init() {
+    let dragging = false;
+    const handler = e => {
+      const r = wheel.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const a = Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI + 90;
+      setAngle(a);
+    };
+    wheel.addEventListener('pointerdown', e => { dragging = true; wheel.setPointerCapture(e.pointerId); handler(e); });
+    wheel.addEventListener('pointermove', e => { if (dragging) handler(e); });
+    wheel.addEventListener('pointerup', () => { dragging = false; });
+
+    $('#motor-speed-input').addEventListener('input', e => {
+      STATE.motor.speed = parseInt(e.target.value, 10);
+      $('#motor-speed').textContent = STATE.motor.speed;
+    });
+    const anchor = $('#anchor-toggle');
+    anchor.addEventListener('click', () => {
+      STATE.motor.anchor = !STATE.motor.anchor;
+      anchor.classList.toggle('on', STATE.motor.anchor);
+      anchor.querySelector('.v').textContent = STATE.motor.anchor ? 'Down' : 'Released';
+    });
+    const lock = $('#lock-toggle');
+    lock.addEventListener('click', () => {
+      STATE.motor.lock = !STATE.motor.lock;
+      lock.classList.toggle('on', STATE.motor.lock);
+      lock.querySelector('.v').textContent = STATE.motor.lock ? 'Locked' : 'Off';
+    });
+  }
+  return { init };
+})();
+
+/* ==========================================================================
+   12 — WALL
+   ========================================================================== */
+function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const COMMUNITY_NAMES = ['CharFish88','PierAngler','SaiKungSam','StanleyTide','ReelDeal','NightCaster','BeachBum','BraidBoss','LowTideJoe','MangroveMary','HookedHK','LineSlinger'];
+
+function generateWall() {
+  const seed = Math.floor(Date.now() / 86400000);
+  const rng = mulberry32(seed);
+  const out = [];
+  for (let i = 0; i < 30; i++) {
+    const f = FISH[Math.floor(rng() * FISH.length)];
+    const u = COMMUNITY_NAMES[Math.floor(rng() * COMMUNITY_NAMES.length)];
+    const size = Math.round(parseInt(f.size) + rng() * 20);
+    const hAgo = Math.floor(rng() * 48) + 1;
+    const loc = rng() < 0.5 ? 'Sai Kung' : 'Stanley';
+    const cond = ['Incoming tide','Dawn','Sunset','Cloudy','Bright sun','After rain'][Math.floor(rng() * 6)];
+    out.push({ user: u, fish: f, size, hAgo, loc, cond });
+  }
+  return out;
+}
+function renderWall() {
+  const items = generateWall();
+  $('#wall-count').textContent = `${items.length} CATCHES`;
+  const counts = {};
+  items.forEach(i => counts[i.fish.en] = (counts[i.fish.en]||0) + 1);
+  const trending = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 4);
+  $('#wall-trending').innerHTML = trending.map(([n, c]) => `<span class="trend-pill">${n} × ${c}</span>`).join('');
+  $('#wall-grid').innerHTML = items.map(i => `
+    <div class="wall-item">
+      <div class="wall-head">
+        <span class="wall-user">${i.user}</span>
+        <span class="wall-time">${i.hAgo}H AGO</span>
+      </div>
+      <div class="wall-fish">${i.fish.en}</div>
+      <div class="wall-meta">
+        <span class="wall-size">${i.size}CM</span>
+        <span>${i.loc.toUpperCase()}</span>
+        <span>${i.cond.toUpperCase()}</span>
+        <span>${i.fish.bait.split(',')[0].toUpperCase()}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ==========================================================================
+   13 — SHARE CARD
+   ========================================================================== */
+const Share = (() => {
+  function fillCard(entry) {
+    $('#sc-name').textContent = entry.species || '—';
+    const fishMatch = FISH.find(f => entry.species && f.en.toLowerCase().includes(entry.species.toLowerCase().split(' ')[0]));
+    $('#sc-latin').textContent = fishMatch?.latin || '';
+    $('#sc-fish-use').setAttribute('href', '#' + guessFishSymbol(entry.species || ''));
+    $('#sc-size').textContent = entry.size ? `${entry.size}CM` : '—';
+    $('#sc-cond').textContent = entry.conditions?.weatherDesc || (STATE.weather ? 'Live' : '—');
+    $('#sc-date').textContent = new Date(entry.timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
+    $('#sc-location').textContent = (entry.location?.name || '—').toUpperCase();
+    $('#sc-coords').textContent = LOC[entry.location?.key]?.coord || LOC[STATE.loc].coord;
+    $('#sc-stamp').textContent = `LOG ID · ${entry.id?.slice(0, 8) || '—'}`.toUpperCase();
+  }
+  async function exportEntry(entry) {
+    if (!entry) return;
+    fillCard(entry);
+    const card = $('#share-card');
+    card.style.left = '0';
+    card.setAttribute('aria-hidden', 'false');
+    try {
+      if (typeof html2canvas === 'undefined') {
+        Modal.open({ title: 'Hold on', body: 'Share renderer still loading. Try again in a moment.' });
+        return;
+      }
+      const canvas = await html2canvas(card, { backgroundColor: '#06080b', scale: 1, logging: false });
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+      const file = new File([blob], `troll-${entry.species||'catch'}.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'Caught with TROLL', text: `${entry.species} · ${entry.size||''}cm` });
+      } else {
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = `troll-${(entry.species||'catch').replace(/\s+/g,'-').toLowerCase()}.png`;
+        a.click();
+      }
+    } catch (e) {
+      Modal.open({ title: 'Share failed', body: 'Could not render the share card. ' + e.message });
+    } finally {
+      card.style.left = '-9999px';
+      card.setAttribute('aria-hidden', 'true');
+    }
+  }
+  function shareApp() {
+    const url = location.href;
+    const text = "I've been using TROLL to fish HK shores. Sending you the link.";
+    if (navigator.share) {
+      navigator.share({ title: 'TROLL', text, url }).catch(()=>{});
+    } else {
+      navigator.clipboard?.writeText(url + '\n' + text);
+      Modal.open({ title: 'Link copied', body: 'TROLL link copied to clipboard. Send it to a friend.' });
+    }
+    const invites = parseInt(localStorage.getItem('troll.invites') || '0', 10) + 1;
+    localStorage.setItem('troll.invites', invites);
+    if (invites === 3) {
+      setTimeout(() => Modal.open({ title: 'Crew of 3 unlocked', body: 'Three friends invited. Badge unlocked.' }), 600);
+    }
+  }
+  return { exportEntry, shareApp };
+})();
+
+/* ==========================================================================
+   14 — MODAL
+   ========================================================================== */
+const Modal = (() => {
+  const root = $('#modal');
+  function open({ title, body, input=false, confirm=null }) {
+    $('#modal-title').textContent = title;
+    $('#modal-body').textContent = body;
+    $('#modal-input-wrap').style.display = input ? 'block' : 'none';
+    $('#modal-confirm').style.display = confirm ? 'inline-flex' : 'none';
+    if (confirm) $('#modal-confirm').textContent = confirm;
+    root.classList.add('open');
+  }
+  function close() { root.classList.remove('open'); $('#modal-input').value = ''; }
+  $('#modal-cancel').addEventListener('click', close);
+  $('#modal-confirm').addEventListener('click', () => {
+    const v = $('#modal-input').value;
+    if (v) {
+      const list = JSON.parse(localStorage.getItem('troll.waitlist') || '[]');
+      list.push({ email: v, when: Date.now() });
+      localStorage.setItem('troll.waitlist', JSON.stringify(list));
+      $('#modal-title').textContent = "You're on the list.";
+      $('#modal-body').textContent = "We'll let you know.";
+      $('#modal-input-wrap').style.display = 'none';
+      $('#modal-confirm').style.display = 'none';
+    } else { close(); }
+  });
+  root.addEventListener('click', e => { if (e.target === root) close(); });
+  return { open, close };
+})();
+
+/* ==========================================================================
+   15 — CONDITIONS-DRIVEN UI
+   ========================================================================== */
+function applyConditionFX({ windKmh, rainMm, hour, sunset }) {
+  document.body.classList.toggle('windy', windKmh > 25);
+  document.body.classList.toggle('rainy', rainMm > 5);
+  const goldenStart = sunset - 1, goldenEnd = sunset;
+  const isGolden = hour >= goldenStart && hour < goldenEnd;
+  const isNight = hour >= sunset || hour < 6;
+  document.body.classList.toggle('golden', isGolden && !isNight);
+  document.body.classList.toggle('night', isNight);
+}
+
+/* ==========================================================================
+   16 — PULL TO REFRESH
+   ========================================================================== */
+function setupPTR() {
+  if (!('ontouchstart' in window)) return;
+  const ptr = $('#ptr');
+  let startY = 0, pulling = false;
+  document.addEventListener('touchstart', e => {
+    if (window.scrollY <= 0) { startY = e.touches[0].clientY; pulling = true; }
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 0) {
+      ptr.classList.add('active');
+      ptr.style.transform = `translateX(-50%) translateY(${Math.min(dy * 0.4, 80)}px)`;
+    }
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (!pulling) return;
+    pulling = false;
+    const dy = (e.changedTouches[0]?.clientY || 0) - startY;
+    ptr.style.transform = '';
+    if (dy > 100) refresh();
+    setTimeout(() => ptr.classList.remove('active'), 600);
+  });
+}
+
+/* ==========================================================================
+   17 — APP / VIEW SWITCH / BOOT
+   ========================================================================== */
+function setView(v) {
+  STATE.view = v;
+  $$('.view').forEach(el => el.dataset.active = String(el.dataset.view === v));
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+  if (v === 'wall') renderWall();
+  if (v === 'log') renderLog();
+}
+
+async function refresh() {
+  const loc = LOC[STATE.loc];
+  renderTopMeta();
+
+  const [wR, fR, warnR, mR] = await Promise.allSettled([
+    cachedFetch('weather', HKO + 'rhrread&lang=en', TTL.weather),
+    cachedFetch('forecast', HKO + 'fnd&lang=en', TTL.forecast),
+    cachedFetch('warnsum', HKO + 'warnsum&lang=en', TTL.weather),
+    cachedFetch('marine.' + STATE.loc, `https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lng}&hourly=wave_height,wave_direction,wind_speed_10m,sea_level_height_msl&timezone=Asia%2FHong_Kong&forecast_days=2`, TTL.marine)
+  ]);
+  const weather = wR.status === 'fulfilled' ? wR.value : null;
+  const forecast = fR.status === 'fulfilled' ? fR.value : null;
+  const warnings = warnR.status === 'fulfilled' ? warnR.value : null;
+  const marine = mR.status === 'fulfilled' ? mR.value : null;
+  STATE.weather = weather; STATE.forecast = forecast; STATE.warnings = warnings; STATE.marine = marine;
+
+  // values
+  const stationMap = { saikung: 'Sai Kung', stanley: 'Stanley' };
+  const temp = pickStationVal(weather?.temperature?.data, stationMap[STATE.loc]);
+  const humid = pickStationVal(weather?.humidity?.data) ?? 70;
+  const rainMm = pickRain(weather?.rainfall?.data, stationMap[STATE.loc]) ?? 0;
+  const uv = (typeof weather?.uvindex === 'object' ? weather.uvindex.data?.[0]?.value : null) ?? 5;
+  const windKmh = marine?.hourly?.wind_speed_10m?.[0] ?? 12;
+  const windDeg = marine?.hourly?.wave_direction?.[0] ?? 90;
+  const waveM = marine?.hourly?.wave_height?.[0] ?? 0.5;
+  const desc = weather?.icon?.[0] ? iconToDesc(weather.icon[0]) : 'Hong Kong';
+
+  // typhoon banner
+  const warnList = warnings ? Object.values(warnings).filter(v => v && v.actionCode) : [];
+  const typhoon = warnList.find(w => (w.code||'').startsWith('TC') || /tropical/i.test(w.name||''));
+  if (typhoon) {
+    const sig = typhoon.code?.replace('TC','T') || 'T';
+    $('#typhoon-banner').classList.add('on');
+    $('#typhoon-title').textContent = `${sig} hoisted. Don't troll the typhoon.`;
+    $('#typhoon-sub').textContent = typhoon.name || 'Tropical cyclone signal active.';
+    $('#typhoon-sigil').textContent = sig;
+  } else {
+    $('#typhoon-banner').classList.remove('on');
+  }
+  // generic warnings
+  const otherWarns = warnList.filter(w => w !== typhoon);
+  if (otherWarns.length) {
+    $('#warn-banner').classList.add('on');
+    $('#warn-text').textContent = otherWarns.map(w => (w.name || w.code)).join(' · ').toUpperCase();
+  } else {
+    $('#warn-banner').classList.remove('on');
+  }
+
+  // tide
+  let tideSeries;
+  const curve = marine?.hourly?.sea_level_height_msl;
+  if (curve && curve.some(v => v != null)) {
+    tideSeries = marine.hourly.time.map((t, i) => ({ t: new Date(t), height: 1 + (curve[i] ?? 0) }));
+  } else {
+    tideSeries = syntheticTide(new Date(), loc.lat * Math.PI/180);
+  }
+  STATE.tideSeries = tideSeries;
+  const ts = renderTide(tideSeries);
+  STATE.tideState = ts?.state || 'incoming';
+
+  // danger
+  const danger = computeDanger({ windKmh, waveM, rainMm, uv, warnings: warnList });
+  STATE.danger = danger;
+  renderDanger(danger);
+
+  // conditions + hero
+  renderConditions({ temp, humid, windKmh, windDeg, uv, rainMm, desc, windDir: dirCard(windDeg) });
+  renderHeroHeadline(danger, STATE.tideState, desc);
+
+  // moon
+  const m = renderMoon();
+  STATE.moon = m;
+
+  // forecast + heat
+  const dangerByDay = (forecast?.weatherForecast || []).slice(0, 7).map(d => {
+    const w = (d.forecastWeather || '').toLowerCase();
+    let s = 25;
+    if (w.includes('shower')) s += 15;
+    if (w.includes('rain')) s += 25;
+    if (w.includes('heavy') || w.includes('storm')) s += 30;
+    if (w.includes('thunder')) s += 25;
+    if (w.includes('wind')) s += 15;
+    return clamp(s, 5, 95);
+  });
+  while (dangerByDay.length < 7) dangerByDay.push(45);
+  renderForecast(forecast, dangerByDay);
+  renderHeat(dangerByDay);
+
+  // fish + gear + bait
+  const top = renderFish(temp, STATE.tideState);
+  const moonKey = m.name.toLowerCase().includes('new') ? 'new' : m.name.toLowerCase().includes('full') ? 'full' : 'other';
+  const hour = new Date().getHours();
+  const sunset = sunsetHourHK();
+  const isNight = hour >= sunset || hour < 6;
+  renderGear(gearList({ temp: temp ?? 24, rainMm, uv, windKmh, isNight, moonKey }));
+  renderBait(baitPicks({ desc, topFish: top }));
+
+  // condition FX
+  applyConditionFX({ windKmh, rainMm, hour, sunset });
+
+  renderLog();
+}
+
+function setupHandlers() {
+  // tabs
+  $$('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
+  $('#brand-name').parentElement.parentElement.addEventListener('click', e => { e.preventDefault(); setView('dashboard'); });
+
+  // location toggle
+  $('#loc-toggle').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-loc]');
+    if (!btn) return;
+    STATE.loc = btn.dataset.loc;
+    localStorage.setItem('troll.loc', STATE.loc);
+    $$('#loc-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    refresh();
+  });
+  $$('#loc-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.loc === STATE.loc)));
+
+  // share app
+  $('#share-app-btn').addEventListener('click', Share.shareApp);
+
+  // log form
+  $('#log-time').value = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+  $('#log-rating').addEventListener('click', e => {
+    const buttons = $$('#log-rating button');
+    const idx = buttons.indexOf(e.target);
+    if (idx < 0) return;
+    const r = idx + 1;
+    $('#log-rating').dataset.rating = r;
+    buttons.forEach((b, i) => b.classList.toggle('on', i < r));
+  });
+  $('#log-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const entry = {
+      id: Math.random().toString(36).slice(2) + Date.now().toString(36),
+      timestamp: $('#log-time').value || new Date().toISOString(),
+      location: { key: STATE.loc, name: LOC[STATE.loc].name, spot: $('#log-spot').value },
+      species: $('#log-species').value.trim(),
+      size: $('#log-size').value,
+      bait: $('#log-bait').value,
+      notes: $('#log-notes').value,
+      rating: parseInt($('#log-rating').dataset.rating || '3', 10),
+      conditions: STATE.weather ? {
+        weatherDesc: STATE.weather?.icon?.[0] ? iconToDesc(STATE.weather.icon[0]) : '',
+        tide: STATE.tideState
+      } : null
+    };
+    if (!entry.species) return;
+    STATE.log.unshift(entry);
+    localStorage.setItem('troll.log', JSON.stringify(STATE.log));
+    e.target.reset();
+    $('#log-time').value = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+    $('#log-rating').dataset.rating = 3;
+    $$('#log-rating button').forEach((b, i) => b.classList.toggle('on', i < 3));
+    renderLog();
+  });
+  $('#log-filter').addEventListener('change', renderLog);
+  $('#export-csv').addEventListener('click', () => {
+    if (!STATE.log.length) { Modal.open({ title: 'Nothing biting yet.', body: 'Log some catches first.' }); return; }
+    const headers = ['timestamp','location','spot','species','size_cm','bait','rating','notes'];
+    const rows = STATE.log.map(e => [
+      e.timestamp, e.location?.name||'', e.location?.spot||'',
+      e.species, e.size, e.bait, e.rating, (e.notes||'').replace(/[\r\n]+/g, ' ')
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v??'').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `troll-log-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  $('#reset-checklist').addEventListener('click', () => {
+    STATE.checklist = {}; localStorage.setItem('troll.check', '{}');
+    $$('.gear-item').forEach(el => el.classList.remove('checked'));
+  });
+
+  Motor.init();
+
+  // resize → re-render tide
+  let rt;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { if (STATE.tideSeries) renderTide(STATE.tideSeries); }, 120);
+  });
+}
+
+function boot() {
+  document.documentElement.style.setProperty('--brand-name', '"TROLL"');
+  Cursor.init();
+  setupHandlers();
+  setupPTR();
+  setView('dashboard');
+  refresh().finally(() => {
+    setTimeout(() => $('#splash').classList.add('gone'), 200);
+    setTimeout(() => $('#splash').remove(), 1500);
+  });
+  Sonar.init();
+  setInterval(renderTopMeta, 60 * 1000);
+  setInterval(refresh, 15 * 60 * 1000);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+</script>
+
+</body>
+</html>
